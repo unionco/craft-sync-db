@@ -11,14 +11,14 @@
         "craft-sync-db"
     ],
     "support": {
-        "docs": "???",
-        "issues": "???"
+        "docs": "https://github.com/abryrath/craft-syncdb",
+        "issues": "https://github.com/abryrath/craft-syncdb"
     },
     "license": "MIT",
     "authors": [
         {
             "name": "Abry Rath<abryrath@gmail.com>",
-            "homepage": "github.com/abryrath"
+            "homepage": "https://github.com/abryrath"
         }
     ],
     "require": {

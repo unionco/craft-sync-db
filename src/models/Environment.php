@@ -147,6 +147,7 @@ class Environment extends Model
 
     public function getRemoteDownloadCommand(string $filename, string $localPath): string
     {
+        //var_dump($localPath); die;
         $cmd = "scp ";
         if ($this->port && $this->port != 22) {
             $cmd .= "-P {$this->port} ";
