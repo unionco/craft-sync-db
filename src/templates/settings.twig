@@ -1,0 +1,26 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * craft-sync-db plugin for Craft CMS 3.x
+ *
+ * craft-sync-db Settings.twig
+ *
+ * @author    Abry Rath<abryrath@gmail.com>
+ * @copyright Copyright (c) 2018 Abry Rath<abryrath@gmail.com>
+ * @link      github.com/abryrath
+ * @package   Craftsyncdb
+ * @since     1.0.0
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("abryrath\\craftsyncdb\\assetbundles\\craftsyncdb\\CraftsyncdbAsset") %}
+
+{{ forms.textField({
+    label: 'Some Field',
+    instructions: 'Enter some setting here.',
+    id: 'someAttribute',
+    name: 'someAttribute',
+    value: ''
+}) }}

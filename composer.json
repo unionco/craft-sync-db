@@ -1,0 +1,43 @@
+{
+    "name": "abryrath/craft-sync-db",
+    "description": "Craft 3 plugin to sync database across environments",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "craft-sync-db"
+    ],
+    "support": {
+        "docs": "???",
+        "issues": "???"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Abry Rath<abryrath@gmail.com>",
+            "homepage": "github.com/abryrath"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0-RC1"
+    },
+    "autoload": {
+        "psr-4": {
+          "abryrath\\craftsyncdb\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "craft-sync-db",
+        "handle": "craft-sync-db",
+        "hasCpSettings": true,
+        "hasCpSection": true,
+        "changelogUrl": "???",
+        "components": {
+            "sync": "abryrath\\craftsyncdb\\services\\Sync"
+        },
+        "class": "abryrath\\craftsyncdb\\Craftsyncdb"
+    }
+}

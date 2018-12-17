@@ -1,0 +1,40 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * craft-sync-db plugin for Craft CMS 3.x
+ *
+ * craft-sync-db index.twig
+ *
+ * @author    Abry Rath<abryrath@gmail.com>
+ * @copyright Copyright (c) 2018 Abry Rath<abryrath@gmail.com>
+ * @link      github.com/abryrath
+ * @package   Craftsyncdb
+ * @since     1.0.0
+ */
+#}
+
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("abryrath\\craftsyncdb\\assetbundles\\craftsyncdb\\CraftsyncdbAsset") %}
+{% do view.registerAssetBundle("abryrath\\craftsyncdb\\assetbundles\\indexcpsection\\IndexCPSectionAsset") %}
+
+{% set docsUrl = "???" %}
+
+{% set title = "craft-sync-db" %}
+
+{% set pluginCpUrl = url('craft-sync-db') %}
+
+{% set iconUrl = view.getAssetManager().getPublishedUrl('@abryrath/craftsyncdb/assetbundles/indexcpsection/dist', true) ~ '/img/Index-icon.svg' %}
+
+{% set extraPageHeaderHtml %}
+    <div class="buttons">
+        <a href="{{ pluginCpUrl }}" class="btn submit add icon">{{ "Click Me!"|t('craft-sync-db') }}</a>
+    </div>
+{% endset %}
+
+{% set content %}
+    <h2>{{ "Index CP Section body goes here"|t('craft-sync-db') }}</h2>
+    <img src="{{ iconUrl }}" height="64" width="64" />
+    <p class="textline"></p>
+{% endset %}

@@ -1,0 +1,84 @@
+<?php
+/**
+ * craft-sync-db plugin for Craft CMS 3.x
+ *
+ * Craft 3 plugin to sync database across environments
+ *
+ * @link      github.com/abryrath
+ * @copyright Copyright (c) 2018 Abry Rath<abryrath@gmail.com>
+ */
+
+namespace abryrath\craftsyncdb;
+
+use abryrath\craftsyncdb\services\Sync as SyncService;
+use abryrath\craftsyncdb\models\Settings;
+
+use Craft;
+use craft\base\Plugin;
+use craft\services\Plugins;
+use craft\events\PluginEvent;
+use craft\console\Application as ConsoleApplication;
+
+use yii\base\Event;
+
+/**
+ * Class Craftsyncdb
+ *
+ * @author    Abry Rath<abryrath@gmail.com>
+ * @package   Craftsyncdb
+ * @since     1.0.0
+ *
+ * @property  SyncService $sync
+ */
+class Craftsyncdb extends Plugin
+{
+    const CONSOLE_PREFIX = 'craft-sync-db/sync';
+    const DUMP_COMMAND = 'dumpmysql';
+    
+    public static $plugin;
+
+    public $schemaVersion = '1.0.0';
+
+    public function init()
+    {
+        parent::init();
+        self::$plugin = $this;
+
+        if (Craft::$app instanceof ConsoleApplication) {
+            $this->controllerNamespace = 'abryrath\craftsyncdb\console\controllers';
+        }
+
+        Event::on(
+            Plugins::class,
+            Plugins::EVENT_AFTER_INSTALL_PLUGIN,
+            function (PluginEvent $event) {
+                if ($event->plugin === $this) {
+                }
+            }
+        );
+
+        Craft::info(
+            Craft::t(
+                'craft-sync-db',
+                '{name} plugin loaded',
+                ['name' => $this->name]
+            ),
+            __METHOD__
+        );
+    }
+
+    protected function createSettingsModel()
+    {
+        return new Settings();
+    }
+
+    protected function settingsHtml(): string
+    {
+        return Craft::$app->view->renderTemplate(
+            'craft-sync-db/settings',
+            [
+                'settings' => $this->getSettings()
+            ]
+        );
+    }
+}
