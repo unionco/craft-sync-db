@@ -198,49 +198,11 @@ class Sync extends Component
 
             sleep(1);
         }
-
-        // $logger->log('Beginning remote dump');
-        // $remoteSqlDumpStart = microtime(true);
-        // $execRemoteSsh = $remote->getSshCommand();
-        // $execRemoteDump = $remote->getRemoteDumpCommand();
-
-        // $result = $this->exec($execRemoteDump);
-        // $remoteSqlDumpEnd = microtime(true);
-
-        // $logger->log('Remote dump completed in ' . number_format(($remoteSqlDumpEnd - $remoteSqlDumpStart), 2) . ' seconds');
-
-        // sleep(1);
-        // $logger->log('Begging remote download');
-        // $downloadStart = microtime(true);
-        // $execDownload = $remote->getRemoteDownloadCommand(statiic::SQL_DUMP_FILE_TARBALL);
-        // $result = $this->exec($execDownload);
-        // $downloadEnd = microtime(true);
-        // $logger->log('Remote download completed in ' . number_format(($downloadEnd - $downloadStart), 2) . ' seconds');
-
-        // sleep(1);
-
-        // delete remote file
-        // $remoteDeleteCommand =
-        // $this->exec($remoteDeleteCommand);
-        // $logger->log('Remote File Deleted');
-
-        // $extractCommand = static::extractCommand();
-        // static::exec($extractCommand);
-
-        // $importCommand = static::importCommand();
-        // static::exec($importCommand);
-        // $logger->log('Local Dump Complete');
-
-        // delete sql file
-        //static::exec();
-
-        // delete zip file
-        //static::exec();
-
     }
+    
     protected function checkBackupPath()
     {
-        $backupPath = $this->sqlDumpPath();
+        $backupPath = static::sqlDumpPath();
         if (!file_exists($backupPath)) {
             mkdir($backupPath, 0777, true);
         }
