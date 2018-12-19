@@ -10,15 +10,14 @@
 
 namespace abryrath\craftsyncdb;
 
-use abryrath\craftsyncdb\services\Sync as SyncService;
 use abryrath\craftsyncdb\models\Settings;
-
+use abryrath\craftsyncdb\services\Sync as SyncService;
+use abryrath\syncdb\SyncDb;
 use Craft;
 use craft\base\Plugin;
-use craft\services\Plugins;
-use craft\events\PluginEvent;
 use craft\console\Application as ConsoleApplication;
-
+use craft\events\PluginEvent;
+use craft\services\Plugins;
 use yii\base\Event;
 
 /**
@@ -34,8 +33,9 @@ class Craftsyncdb extends Plugin
 {
     const CONSOLE_PREFIX = 'craft-sync-db/sync';
     const DUMP_COMMAND = 'dumpmysql';
-    
+
     public static $plugin;
+    public $syncDb;
 
     public $schemaVersion = '1.0.0';
 
@@ -43,6 +43,12 @@ class Craftsyncdb extends Plugin
     {
         parent::init();
         self::$plugin = $this;
+        $this->syncDb = new SyncDb([
+            'baseDir' => CRAFT_BASE_PATH,
+            'storagePath' => Craft::$app->getPath()->getStoragePath(),
+            'environments' => Craft::$app->getPath()->getConfigPath() . '/syncdb.php',
+            'remoteDumpCommand' => 'craft craft-sync-db/sync/dumpmysql',
+        ]);
 
         if (Craft::$app instanceof ConsoleApplication) {
             $this->controllerNamespace = 'abryrath\craftsyncdb\console\controllers';
@@ -77,7 +83,7 @@ class Craftsyncdb extends Plugin
         return Craft::$app->view->renderTemplate(
             'craft-sync-db/settings',
             [
-                'settings' => $this->getSettings()
+                'settings' => $this->getSettings(),
             ]
         );
     }

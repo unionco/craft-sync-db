@@ -11,6 +11,7 @@
 namespace abryrath\craftsyncdb\console\controllers;
 
 use abryrath\craftsyncdb\Craftsyncdb;
+use abryrath\craftsyncdb\util\Logger;
 use Craft;
 use yii\console\Controller;
 use yii\helpers\Console;
@@ -24,51 +25,21 @@ use yii\helpers\Console;
  */
 class SyncController extends Controller
 {
-    // Public Methods
-    // =========================================================================
 
-    /**
-     * Handle craft-sync-db/sync console commands
-     *
-     * @return mixed
-     */
-    public function actionIndex()
+    public function getLogger()
     {
-        $result = 'something';
-
-        echo "Welcome to the console SyncController actionIndex() method\n";
-
-        return $result;
+        return new Logger(new Console());
     }
 
     public function actionSyncDb($environment = 'production')
     {
-        $logger = new class($this)
-        {
-            protected $console;
-            protected $levels = [
-                'info' => CONSOLE::FG_GREEN,
-                'error' => CONSOLE::FG_RED,
-                'normal' => CONSOLE::FG_YELLOW,
-            ];
-
-            public function __construct($console)
-            {
-                $this->console = $console;
-            }
-
-            public function log($text, $level = 'normal')
-            {
-                $this->console->stdout($text, $this->levels[$level]);
-                $this->console->stdout(PHP_EOL);
-            }
-        };
-
-        Craftsyncdb::$plugin->sync->sync($logger, $environment);
+        $logger = $this->getLogger();
+        Craftsyncdb::$plugin->syncDb->sync($logger, $environment);
     }
 
     public function actionDumpmysql()
     {
-        Craftsyncdb::$plugin->sync->dumpMysql();
+        $logger = $this->getLogger();
+        Craftsyncdb::$plugin->syncDb->dump($logger);
     }
 }
