@@ -2,7 +2,7 @@
     "name": "abryrath/craft-sync-db",
     "description": "Craft 3 plugin to sync database across environments",
     "type": "craft-plugin",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "keywords": [
         "craft",
         "cms",
