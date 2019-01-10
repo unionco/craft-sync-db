@@ -33,9 +33,13 @@ class Logger implements LoggerInterface
     public function logOutput($text): void
     {
         if (is_array($text)) {
+            if (!count($text)) {
+                return;
+            }
             foreach ($text as $line) {
                 $this->console->stdout($line, $this->levels['info']);
             }
+            return;
         }
         $this->console->stdout($text, $this->levels['info']);
     }
