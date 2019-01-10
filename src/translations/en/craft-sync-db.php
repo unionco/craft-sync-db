@@ -14,5 +14,5 @@
  * @since     1.0.0
  */
 return [
-    'craft-sync-db plugin loaded' => 'craft-sync-db plugin loaded',
+    'sync-db plugin loaded' => 'sync-db plugin loaded',
 ];

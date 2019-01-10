@@ -31,7 +31,7 @@ use yii\base\Event;
  */
 class SyncDb extends Plugin
 {
-    const CONSOLE_PREFIX = 'craft-sync-db/sync';
+    const CONSOLE_PREFIX = 'sync-db/sync';
     const DUMP_COMMAND = 'dumpmysql';
 
     public static $plugin;
@@ -47,7 +47,7 @@ class SyncDb extends Plugin
             'baseDir' => CRAFT_BASE_PATH,
             'storagePath' => Craft::$app->getPath()->getStoragePath(),
             'environments' => Craft::$app->getPath()->getConfigPath() . '/syncdb.php',
-            'remoteDumpCommand' => 'craft craft-sync-db/sync/dumpmysql',
+            'remoteDumpCommand' => 'craft sync-db/sync/dumpmysql',
         ]);
 
         if (Craft::$app instanceof ConsoleApplication) {
@@ -65,7 +65,7 @@ class SyncDb extends Plugin
 
         Craft::info(
             Craft::t(
-                'craft-sync-db',
+                'sync-db',
                 '{name} plugin loaded',
                 ['name' => $this->name]
             ),
@@ -81,7 +81,7 @@ class SyncDb extends Plugin
     protected function settingsHtml(): string
     {
         return Craft::$app->view->renderTemplate(
-            'craft-sync-db/settings',
+            'sync-db/settings',
             [
                 'settings' => $this->getSettings(),
             ]

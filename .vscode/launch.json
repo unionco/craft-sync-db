@@ -8,7 +8,7 @@
             "name": "Listen for XDebug",
             "type": "php",
             "request": "launch",
-            "port": 9072
+            "port": 9073
         },
         {
             "name": "Launch currently open script",

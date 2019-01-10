@@ -21,20 +21,20 @@
 
 {% set docsUrl = "???" %}
 
-{% set title = "craft-sync-db" %}
+{% set title = "sync-db" %}
 
-{% set pluginCpUrl = url('craft-sync-db') %}
+{% set pluginCpUrl = url('sync-db') %}
 
 {% set iconUrl = view.getAssetManager().getPublishedUrl('@abryrath/craftsyncdb/assetbundles/indexcpsection/dist', true) ~ '/img/Index-icon.svg' %}
 
 {% set extraPageHeaderHtml %}
     <div class="buttons">
-        <a href="{{ pluginCpUrl }}" class="btn submit add icon">{{ "Click Me!"|t('craft-sync-db') }}</a>
+        <a href="{{ pluginCpUrl }}" class="btn submit add icon">{{ "Click Me!"|t('sync-db') }}</a>
     </div>
 {% endset %}
 
 {% set content %}
-    <h2>{{ "Index CP Section body goes here"|t('craft-sync-db') }}</h2>
+    <h2>{{ "Index CP Section body goes here"|t('sync-db') }}</h2>
     <img src="{{ iconUrl }}" height="64" width="64" />
     <p class="textline"></p>
 {% endset %}
