@@ -12,7 +12,7 @@ namespace abryrath\craftsyncdb;
 
 use abryrath\craftsyncdb\models\Settings;
 use abryrath\craftsyncdb\services\Sync as SyncService;
-use abryrath\syncdb\SyncDb;
+//use abryrath\syncdb\SyncDb;
 use Craft;
 use craft\base\Plugin;
 use craft\console\Application as ConsoleApplication;
