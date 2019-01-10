@@ -32,8 +32,8 @@
     "extra": {
         "name": "SyncDb",
         "handle": "sync-db",
-        "hasCpSettings": true,
-        "hasCpSection": true,
+        "hasCpSettings": false,
+        "hasCpSection": false,
         "changelogUrl": "???",
         "components": {
             "sync": "unionco\\craftsyncdb\\services\\Sync"
