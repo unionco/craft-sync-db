@@ -28,7 +28,8 @@ class Logger implements LoggerInterface
     public function logCmd(string $text): void
     {
         $text = preg_replace('/\-\-password=\"(.*)\"/', '--password="*****"', $text);
-        $this->console->stdout('$ ' . $text, $this->levels['normal']);
+        $this->log(PHP_EOL . '[Command]', 'normal');
+        $this->log('$ ' . $text, 'normal');
     }
 
     public function logOutput(array $output): void
