@@ -24,4 +24,14 @@ class Logger implements LoggerInterface
         $this->console->stdout($text, $this->levels[$level]);
         $this->console->stdout(PHP_EOL);
     }
+
+    public function logCmd($text): void
+    {
+        $this->console->stdout('$ ' . $text, $this->levels['normal']);
+    }
+
+    public function logOutput($text): void
+    {
+        $this->console->stdout($text, $this->levels['info']);
+    }
 }

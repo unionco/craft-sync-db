@@ -13,6 +13,7 @@ namespace abryrath\craftsyncdb;
 use abryrath\craftsyncdb\models\Settings;
 use abryrath\craftsyncdb\services\Sync as SyncService;
 //use abryrath\syncdb\SyncDb;
+use craft\i18n\PhpMessageSource;
 use Craft;
 use craft\base\Plugin;
 use craft\console\Application as ConsoleApplication;
@@ -31,23 +32,43 @@ use yii\base\Event;
  */
 class SyncDb extends Plugin
 {
-    const CONSOLE_PREFIX = 'sync-db/sync';
+    const CONSOLE_PREFIX = 'sync-db/sync/';
     const DUMP_COMMAND = 'dumpmysql';
+    const SYNC_COMMAND = 'sync-db';
 
     public static $plugin;
     public $syncDb;
 
     public $schemaVersion = '1.0.0';
 
+    public function __construct($id, $parent = null, array $config = [])
+    {
+        $this->id = $id;
+        Craft::setAlias('@plugins/sync-db', $this->getBasePath());
+        // Translation category
+        $i18n = Craft::$app->getI18n();
+        /** @noinspection UnSafeIsSetOverArrayInspection */
+        if (!isset($i18n->translations[$id]) && !isset($i18n->translations[$id . '*'])) {
+            $i18n->translations[$id] = [
+                'class' => PhpMessageSource::class,
+                'sourceLanguage' => 'en-US',
+                'basePath' => '@plugins/sync-db/translations',
+                'forceTranslation' => true,
+                'allowOverrides' => true,
+            ];
+        }
+        parent::__construct($id, $parent, $config);
+    }
+
     public function init()
     {
         parent::init();
         self::$plugin = $this;
-        $this->syncDb = new SyncDb([
+        $this->syncDb = new \abryrath\syncdb\SyncDb([
             'baseDir' => CRAFT_BASE_PATH,
             'storagePath' => Craft::$app->getPath()->getStoragePath(),
             'environments' => Craft::$app->getPath()->getConfigPath() . '/syncdb.php',
-            'remoteDumpCommand' => 'craft sync-db/sync/dumpmysql',
+            'remoteDumpCommand' => 'craft ' . self::CONSOLE_PREFIX . self::DUMP_COMMAND,
         ]);
 
         if (Craft::$app instanceof ConsoleApplication) {
