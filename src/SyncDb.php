@@ -63,6 +63,16 @@ class SyncDb extends Plugin
     {
         parent::init();
         self::$plugin = $this;
+
+        $configFilePath = Craft::$app->getPath()->getConfigPath() . '/syncdb.php';
+        if (!file_exists($configFilePath)) {
+            $defaultConfigPath = $this->basePath . '/config/default.php';
+            if (!file_exists($defaultConfigPath)) {
+                throw new \Exception("Default configuration not found");
+            }
+            copy($defaultConfigPath, $configFilePath);
+        }
+
         $this->syncDb = new \unionco\syncdb\SyncDb([
             'baseDir' => CRAFT_BASE_PATH,
             'storagePath' => Craft::$app->getPath()->getStoragePath(),
