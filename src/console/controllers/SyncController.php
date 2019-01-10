@@ -10,7 +10,7 @@
 
 namespace abryrath\craftsyncdb\console\controllers;
 
-use abryrath\craftsyncdb\Craftsyncdb;
+use abryrath\craftsyncdb\SyncDb;
 use abryrath\craftsyncdb\util\Logger;
 use Craft;
 use yii\console\Controller;
@@ -20,7 +20,7 @@ use yii\helpers\Console;
  * Sync Command
  *
  * @author    Abry Rath<abryrath@gmail.com>
- * @package   Craftsyncdb
+ * @package   SyncDb
  * @since     1.0.0
  */
 class SyncController extends Controller
@@ -34,12 +34,12 @@ class SyncController extends Controller
     public function actionSyncDb($environment = 'production')
     {
         $logger = $this->getLogger();
-        Craftsyncdb::$plugin->syncDb->sync($logger, $environment);
+        SyncDb::$plugin->syncDb->sync($logger, $environment);
     }
 
     public function actionDumpmysql()
     {
         $logger = $this->getLogger();
-        Craftsyncdb::$plugin->syncDb->dump($logger);
+        SyncDb::$plugin->syncDb->dump($logger);
     }
 }
