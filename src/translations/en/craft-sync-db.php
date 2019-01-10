@@ -4,12 +4,12 @@
  *
  * Craft 3 plugin to sync database across environments
  *
- * @link      github.com/abryrath
- * @copyright Copyright (c) 2018 Abry Rath<abryrath@gmail.com>
+ * @link      github.com/unionco
+ * @copyright Copyright (c) 2018 Abry Rath<unionco@gmail.com>
  */
 
 /**
- * @author    Abry Rath<abryrath@gmail.com>
+ * @author    Abry Rath<unionco@gmail.com>
  * @package   Craftsyncdb
  * @since     1.0.0
  */

@@ -1,5 +1,5 @@
 {
-    "name": "abryrath/craft-sync-db",
+    "name": "unionco/craft-sync-db",
     "description": "Craft 3 plugin to sync database across environments",
     "type": "craft-plugin",
     "version": "0.1.1",
@@ -11,34 +11,34 @@
         "craft-sync-db"
     ],
     "support": {
-        "docs": "https://github.com/abryrath/craft-syncdb",
-        "issues": "https://github.com/abryrath/craft-syncdb"
+        "docs": "https://github.com/unionco/craft-sync-db",
+        "issues": "https://github.com/unionco/craft-sync-db"
     },
     "license": "MIT",
     "authors": [
         {
             "name": "Abry Rath<abryrath@gmail.com>",
-            "homepage": "https://github.com/abryrath"
+            "homepage": "https://github.com/unionco"
         }
     ],
     "require": {
         "craftcms/cms": "^3.0.0-RC1",
-        "abryrath/syncdb": "^0.2.0"
+        "unionco/syncdb": "^0.2.0"
     },
     "autoload": {
         "psr-4": {
-          "abryrath\\craftsyncdb\\": "src/"
+          "unionco\\craftsyncdb\\": "src/"
         }
     },
     "extra": {
-        "name": "sync-db",
+        "name": "SyncDb",
         "handle": "sync-db",
         "hasCpSettings": true,
         "hasCpSection": true,
         "changelogUrl": "???",
         "components": {
-            "sync": "abryrath\\craftsyncdb\\services\\Sync"
+            "sync": "unionco\\craftsyncdb\\services\\Sync"
         },
-        "class": "abryrath\\craftsyncdb\\SyncDb"
+        "class": "unionco\\craftsyncdb\\SyncDb"
     }
 }

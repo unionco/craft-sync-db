@@ -1,8 +1,8 @@
 <?php
 
-namespace abryrath\craftsyncdb\util;
+namespace unionco\craftsyncdb\util;
 
-use abryrath\syncdb\util\LoggerInterface;
+use unionco\syncdb\util\LoggerInterface;
 use yii\helpers\Console;
 
 class Logger implements LoggerInterface

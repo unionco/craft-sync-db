@@ -4,14 +4,14 @@
  *
  * Craft 3 plugin to sync database across environments
  *
- * @link      github.com/abryrath
- * @copyright Copyright (c) 2018 Abry Rath<abryrath@gmail.com>
+ * @link      github.com/unionco
+ * @copyright Copyright (c) 2018 Abry Rath<unionco@gmail.com>
  */
 
-namespace abryrath\craftsyncdb\console\controllers;
+namespace unionco\craftsyncdb\console\controllers;
 
-use abryrath\craftsyncdb\SyncDb;
-use abryrath\craftsyncdb\util\Logger;
+use unionco\craftsyncdb\SyncDb;
+use unionco\craftsyncdb\util\Logger;
 use Craft;
 use yii\console\Controller;
 use yii\helpers\Console;
@@ -19,7 +19,7 @@ use yii\helpers\Console;
 /**
  * Sync Command
  *
- * @author    Abry Rath<abryrath@gmail.com>
+ * @author    Abry Rath<unionco@gmail.com>
  * @package   SyncDb
  * @since     1.0.0
  */

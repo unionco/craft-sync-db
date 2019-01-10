@@ -4,15 +4,15 @@
  *
  * Craft 3 plugin to sync database across environments
  *
- * @link      github.com/abryrath
- * @copyright Copyright (c) 2018 Abry Rath<abryrath@gmail.com>
+ * @link      github.com/unionco
+ * @copyright Copyright (c) 2018 Abry Rath<unionco@gmail.com>
  */
 
-namespace abryrath\craftsyncdb;
+namespace unionco\craftsyncdb;
 
-use abryrath\craftsyncdb\models\Settings;
-use abryrath\craftsyncdb\services\Sync as SyncService;
-//use abryrath\syncdb\SyncDb;
+use unionco\craftsyncdb\models\Settings;
+use unionco\craftsyncdb\services\Sync as SyncService;
+//use unionco\syncdb\SyncDb;
 use craft\i18n\PhpMessageSource;
 use Craft;
 use craft\base\Plugin;
@@ -24,7 +24,7 @@ use yii\base\Event;
 /**
  * Class Craftsyncdb
  *
- * @author    Abry Rath<abryrath@gmail.com>
+ * @author    Abry Rath<unionco@gmail.com>
  * @package   Craftsyncdb
  * @since     1.0.0
  *
@@ -64,7 +64,7 @@ class SyncDb extends Plugin
     {
         parent::init();
         self::$plugin = $this;
-        $this->syncDb = new \abryrath\syncdb\SyncDb([
+        $this->syncDb = new \unionco\syncdb\SyncDb([
             'baseDir' => CRAFT_BASE_PATH,
             'storagePath' => Craft::$app->getPath()->getStoragePath(),
             'environments' => Craft::$app->getPath()->getConfigPath() . '/syncdb.php',
@@ -72,7 +72,7 @@ class SyncDb extends Plugin
         ]);
 
         if (Craft::$app instanceof ConsoleApplication) {
-            $this->controllerNamespace = 'abryrath\craftsyncdb\console\controllers';
+            $this->controllerNamespace = 'unionco\craftsyncdb\console\controllers';
         }
 
         Event::on(

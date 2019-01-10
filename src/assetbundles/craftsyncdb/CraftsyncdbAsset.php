@@ -4,18 +4,18 @@
  *
  * Craft 3 plugin to sync database across environments
  *
- * @link      github.com/abryrath
- * @copyright Copyright (c) 2018 Abry Rath<abryrath@gmail.com>
+ * @link      github.com/unionco
+ * @copyright Copyright (c) 2018 Abry Rath<unionco@gmail.com>
  */
 
-namespace abryrath\craftsyncdb\assetbundles\Craftsyncdb;
+namespace unionco\craftsyncdb\assetbundles\Craftsyncdb;
 
 use Craft;
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
 
 /**
- * @author    Abry Rath<abryrath@gmail.com>
+ * @author    Abry Rath<unionco@gmail.com>
  * @package   Craftsyncdb
  * @since     1.0.0
  */
@@ -29,7 +29,7 @@ class CraftsyncdbAsset extends AssetBundle
      */
     public function init()
     {
-        $this->sourcePath = "@abryrath/craftsyncdb/assetbundles/craftsyncdb/dist";
+        $this->sourcePath = "@unionco/craftsyncdb/assetbundles/craftsyncdb/dist";
 
         $this->depends = [
             CpAsset::class,
