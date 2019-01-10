@@ -19,28 +19,26 @@ class Logger implements LoggerInterface
         $this->console = $console;
     }
 
-    public function log($text, $level = 'normal') : void
+    public function log(string $text, string $level = 'normal'): void
     {
         $this->console->stdout($text, $this->levels[$level]);
         $this->console->stdout(PHP_EOL);
     }
 
-    public function logCmd($text): void
+    public function logCmd(string $text): void
     {
+        $text = preg_replace('/\-\-password=\"(.*)\"/', '--password="*****"', $text);
         $this->console->stdout('$ ' . $text, $this->levels['normal']);
     }
 
-    public function logOutput($text): void
+    public function logOutput(array $output): void
     {
-        if (is_array($text)) {
-            if (!count($text)) {
-                return;
-            }
-            foreach ($text as $line) {
-                $this->console->stdout($line, $this->levels['info']);
-            }
+        $this->log('[Output]', 'info');
+        if (!count($output)) {
             return;
         }
-        $this->console->stdout($text, $this->levels['info']);
+        foreach ($output as $line) {
+            $this->log($line, 'info');
+        }
     }
 }
