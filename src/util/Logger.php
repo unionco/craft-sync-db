@@ -2,7 +2,7 @@
 
 namespace abryrath\craftsyncdb\util;
 
-use abryrath\syncdb\util\Logger as LoggerInterface;
+use abryrath\syncdb\util\LoggerInterface;
 use yii\helpers\Console;
 
 class Logger implements LoggerInterface
@@ -33,10 +33,11 @@ class Logger implements LoggerInterface
 
     public function logOutput(array $output): void
     {
-        $this->log('[Output]', 'info');
         if (!count($output)) {
             return;
         }
+
+        $this->log('[Output]', 'info');
         foreach ($output as $line) {
             $this->log($line, 'info');
         }
