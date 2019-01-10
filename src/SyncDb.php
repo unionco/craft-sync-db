@@ -29,7 +29,7 @@ use yii\base\Event;
  *
  * @property  SyncService $sync
  */
-class Craftsyncdb extends Plugin
+class SyncDb extends Plugin
 {
     const CONSOLE_PREFIX = 'craft-sync-db/sync';
     const DUMP_COMMAND = 'dumpmysql';

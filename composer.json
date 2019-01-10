@@ -31,14 +31,14 @@
         }
     },
     "extra": {
-        "name": "craft-sync-db",
-        "handle": "craft-sync-db",
+        "name": "sync-db",
+        "handle": "sync-db",
         "hasCpSettings": true,
         "hasCpSection": true,
         "changelogUrl": "???",
         "components": {
             "sync": "abryrath\\craftsyncdb\\services\\Sync"
         },
-        "class": "abryrath\\craftsyncdb\\Craftsyncdb"
+        "class": "abryrath\\craftsyncdb\\SyncDb"
     }
 }
