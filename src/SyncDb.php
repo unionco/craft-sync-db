@@ -10,7 +10,6 @@
 
 namespace unionco\craftsyncdb;
 
-use unionco\craftsyncdb\models\Settings;
 use unionco\craftsyncdb\services\Sync as SyncService;
 //use unionco\syncdb\SyncDb;
 use craft\i18n\PhpMessageSource;
@@ -91,21 +90,6 @@ class SyncDb extends Plugin
                 ['name' => $this->name]
             ),
             __METHOD__
-        );
-    }
-
-    protected function createSettingsModel()
-    {
-        return new Settings();
-    }
-
-    protected function settingsHtml(): string
-    {
-        return Craft::$app->view->renderTemplate(
-            'sync-db/settings',
-            [
-                'settings' => $this->getSettings(),
-            ]
         );
     }
 }

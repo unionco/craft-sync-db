@@ -7,7 +7,7 @@
     "pluginAuthorUrl": "github.com/unionco",
     "pluginAuthorGithub": "",
     "codeComments": "",
-    "pluginComponents": ["consolecommands", "cpsection", "models", "services", "settings"],
+    "pluginComponents": ["consolecommands", "models", "services"],
     "consolecommandName": "Sync",
     "controllerName": "",
     "cpsectionName": "",
