@@ -31,9 +31,8 @@ use yii\base\Event;
  */
 class SyncDb extends Plugin
 {
-    const CONSOLE_PREFIX = 'sync-db/sync/';
-    const DUMP_COMMAND = 'dumpmysql';
-    const SYNC_COMMAND = 'sync-db';
+    const CONSOLE_PREFIX = 'sync-db/sync';
+    const DUMP_COMMAND = '/dumpmysql';
 
     public static $plugin;
     public $syncDb;

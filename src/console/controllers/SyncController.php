@@ -31,7 +31,7 @@ class SyncController extends Controller
         return new Logger(new Console());
     }
 
-    public function actionSyncDb($environment = 'production')
+    public function actionIndex($environment = 'production')
     {
         $logger = $this->getLogger();
         SyncDb::$plugin->syncDb->sync($logger, $environment);
