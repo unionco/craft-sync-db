@@ -25,21 +25,27 @@ use yii\helpers\Console;
  */
 class SyncController extends Controller
 {
-
-    public function getLogger()
-    {
-        return new Logger(new Console());
-    }
-
+    /** 
+     * @param string $environment
+     * @return bool */
     public function actionIndex($environment = 'production')
     {
-        $logger = $this->getLogger();
-        SyncDb::$plugin->syncDb->sync($logger, $environment);
+        /** @var \unionco\syncdb\SyncDb */
+        $syncDb = SyncDb::$plugin->syncDb;
+        
+        $syncDb->sync(null, $environment);
+
+        return true;
     }
 
+    /** @return bool */
     public function actionDumpmysql()
     {
-        $logger = $this->getLogger();
-        SyncDb::$plugin->syncDb->dump($logger);
+        /** @var \unionco\syncdb\SyncDb */
+        $syncDb = SyncDb::$plugin->syncDb;
+        
+        $syncDb->dump();
+
+        return true;
     }
 }

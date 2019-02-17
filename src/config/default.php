@@ -1,5 +1,7 @@
 <?php
 
+use Symfony\Component\Console\Output\Output;
+
 /**
  *  This is the default configuration that will be copied into your Craft
  *  config path, if it does not exist. Any changes to this file will be
@@ -16,6 +18,8 @@ return [
             'port' => 22,
             'phpPath' => '/usr/local/bin/php',
             'mysqlDumpPath' => '/usr/bin/mysqldump',
+            // See Symfony\Component\Console\Output\Output for verbosity options
+            'verbosity' => Output::VERBOSITY_DEBUG,
         ],
         // 'staging' => [
         //     'username' => 'user',
@@ -25,6 +29,7 @@ return [
         //     'port' => 22,
         //     'phpPath' => '/usr/local/bin/php',
         //     'mysqlDumpPath' => '/usr/bin/mysqldump',
+        //     'verbosity' => Output::VERBOSITY_DEBUG,
         // ],
     ],
 ];
