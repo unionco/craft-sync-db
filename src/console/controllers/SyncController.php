@@ -27,7 +27,7 @@ class SyncController extends Controller
 {
     /** 
      * @param string $environment
-     * @return bool */
+     * @return int */
     public function actionIndex($environment = 'production')
     {
         /** @var \unionco\syncdb\SyncDb */
@@ -35,10 +35,10 @@ class SyncController extends Controller
         
         $syncDb->sync(null, $environment);
 
-        return true;
+        return self::EXIT_CODE_NORMAL;
     }
 
-    /** @return bool */
+    /** @return int */
     public function actionDumpmysql()
     {
         /** @var \unionco\syncdb\SyncDb */
@@ -46,6 +46,6 @@ class SyncController extends Controller
         
         $syncDb->dump();
 
-        return true;
+        return self::EXIT_CODE_NORMAL;
     }
 }
