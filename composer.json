@@ -22,7 +22,8 @@
     ],
     "require": {
         "craftcms/cms": "^3.0.0-RC1",
-        "unionco/syncdb": "^0.4.0"
+        "unionco/syncdb": "@dev",
+        "monolog/monolog": "^1.24"
     },
     "autoload": {
         "psr-4": {
@@ -38,7 +39,7 @@
         "components": {
             "sync": "unionco\\craftsyncdb\\services\\Sync"
         },
-        "class": "unionco\\craftsyncdb\\SyncDb"
+        "class": "unionco\\craftsyncdb\\SyncDbPlugin"
     },
     "require-dev": {
         "vimeo/psalm": "^3.0"

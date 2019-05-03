@@ -10,7 +10,7 @@
 
 namespace unionco\craftsyncdb\console\controllers;
 
-use unionco\craftsyncdb\SyncDb;
+use unionco\craftsyncdb\SyncDbPlugin;
 use unionco\craftsyncdb\util\Logger;
 use Craft;
 use yii\console\Controller;
@@ -31,7 +31,7 @@ class SyncController extends Controller
     public function actionIndex($environment = 'production')
     {
         /** @var \unionco\syncdb\SyncDb */
-        $syncDb = SyncDb::$plugin->syncDb;
+        $syncDb = SyncDbPlugin::$plugin->syncDb;
         
         $syncDb->sync(null, $environment);
 
@@ -41,8 +41,8 @@ class SyncController extends Controller
     /** @return int */
     public function actionDumpmysql()
     {
-        /** @var \unionco\syncdb\SyncDb */
-        $syncDb = SyncDb::$plugin->syncDb;
+        /** @var \unionco\syncdb\SyncDbPlugin */
+        $syncDb = SyncDbPlugin::$plugin->syncDb;
         
         $syncDb->dump();
 

@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": { "*": ["types/*"] },
+        "outDir": "./src/assetbundles/geolocation/dist/js/",
+        "noImplicitAny": true,
+        "module": "es6",
+        "target": "es5",
+        "allowJs": true,
+        "downlevelIteration": true,
+        "sourceMap": true,
+        "allowSyntheticDefaultImports": true,
+        "lib": [
+            "es6",
+            "dom",
+            "dom.iterable"
+        ]
+    },
+    "include": [
+        "./resources/js/**/*"
+    ]
+}

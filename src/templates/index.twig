@@ -1,0 +1,24 @@
+{% extends "_layouts/cp" %}
+
+{% set title = "Sync Database" %}
+
+{% do view.registerAssetBundle('unionco\\craftsyncdb\\assetbundles\\cp\\CpAsset') %}
+
+{% block content %}
+    {% import "_includes/forms" as forms %}
+
+    <form data-sync-db>
+        {{ csrfInput() }}
+        <input type="hidden" name="timeoutInMs" value="1000"/>
+        <input type="hidden" name="logFile" value="testing"/>
+        {{ forms.selectField({
+            label: 'Source',
+            name: 'env',
+            id: 'source',
+            options: syncdb.cp.sourceOptions(),
+        }) }}
+        <button class="btn submit" type="submit">Start</button>
+    </form>
+
+    <div data-output></div>
+{% endblock %}
