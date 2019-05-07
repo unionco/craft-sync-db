@@ -7,10 +7,17 @@
 {% block content %}
     {% import "_includes/forms" as forms %}
 
-    <form data-sync-db>
+    {% if output is defined %}
+        <h3>Output</h3>
+        
+        {{ output | raw }}
+        
+    {% endif %}
+    <form data-sync-db method="POST" action="/admin/sync-db/init">
         {{ csrfInput() }}
+        {{ redirectInput('/admin/sync-db/') }}
         <input type="hidden" name="timeoutInMs" value="1000"/>
-        <input type="hidden" name="logFile" value="testing"/>
+        <input type="hidden" name="logFile" value="testing-{{ 'now' | date('m-d-Y-H-i-s') }}"/>
         {{ forms.selectField({
             label: 'Source',
             name: 'env',

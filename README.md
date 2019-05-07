@@ -2,7 +2,7 @@
 
 Craft 3 plugin to sync database across environments
 
-![Screenshot](resources/img/plugin-logo.png)
+![Screenshot](resources/img/plugin-logo.svg)
 
 ## Requirements
 
@@ -18,7 +18,7 @@ To install the plugin, follow these instructions.
 
 2. Then tell Composer to load the plugin:
 
-        composer require /craft-sync-db
+        composer require unionco/craft-sync-db
 
 3. In the Control Panel, go to Settings → Plugins and click the “Install” button for craft-sync-db.
 

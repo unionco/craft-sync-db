@@ -145,7 +145,7 @@ class SyncDbPlugin extends Plugin
                 $event->navItems[] = [
                     'url' => 'sync-db',
                     'label' => 'Sync Database',
-                    'icon' => '@plugins/sync-db/../resources/icon.svg',
+                    'icon' => '@plugins/sync-db/../resources/img/plugin-logo.svg',
                 ];
             }
         );
@@ -154,6 +154,7 @@ class SyncDbPlugin extends Plugin
             UrlManager::class,
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
+                $event->rules['sync-db/init'] = 'sync-db/sync/init';
                 $event->rules['sync-db/status'] = 'sync-db/sync/status';
             }
         );

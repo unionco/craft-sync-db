@@ -10,11 +10,12 @@
 
 namespace unionco\craftsyncdb\console\controllers;
 
-use unionco\craftsyncdb\SyncDbPlugin;
-use unionco\craftsyncdb\util\Logger;
 use Craft;
-use yii\console\Controller;
+use Monolog\Logger;
 use yii\helpers\Console;
+use yii\console\Controller;
+use Monolog\Handler\StreamHandler;
+use unionco\craftsyncdb\SyncDbPlugin;
 
 /**
  * Sync Command
@@ -47,5 +48,15 @@ class SyncController extends Controller
         $syncDb->dump();
 
         return self::EXIT_CODE_NORMAL;
+    }
+
+    public function actionBackground(string $logFile, string $env)
+    {
+        // echo CRAFT_BASE_PATH; die;
+        $filePath = Craft::$app->getPath()->getStoragePath() . '/syncdb-' . $logFile;
+        $logger = new Logger('sync');
+        $logger->pushHandler(new StreamHandler($filePath, Logger::INFO));
+        $syncDb = SyncDbPlugin::getInstance()->syncDb;
+        $syncDb->sync($logger, $env);
     }
 }
