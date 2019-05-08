@@ -17,13 +17,19 @@
         {{ csrfInput() }}
         {{ redirectInput('/admin/sync-db/') }}
         <input type="hidden" name="timeoutInMs" value="1000"/>
-        <input type="hidden" name="logFile" value="testing-{{ 'now' | date('m-d-Y-H-i-s') }}"/>
         {{ forms.selectField({
             label: 'Source',
             name: 'env',
             id: 'source',
             options: syncdb.cp.sourceOptions(),
         }) }}
+        <input type="hidden" name="logFile" value="testing-{{ 'now' | date('m-d-Y-H-i-s') }}"/>
+        {{ forms.textField({
+            label: 'Log File',
+            name: 'logFile',
+            id: 'logFile',
+            value: 'sync-db_' ~ siteName() ~ '_' ('now' | date('c')) ~ '.log'
+        })}}
         <button class="btn submit" type="submit">Start</button>
     </form>
 
