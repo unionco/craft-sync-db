@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b73768dfef2be9c7f607f1cad03abada",
+    "content-hash": "21674865ccfe76c101561f199928e4a6",
     "packages": [
         {
             "name": "cebe/markdown",
@@ -2646,11 +2646,6 @@
         {
             "name": "unionco/syncdb",
             "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/unionco/syncdb.git",
-                "reference": "7bd563f3011b9637297f0aa6e3883810186d50a6"
-            },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/unionco/syncdb/zipball/7bd563f3011b9637297f0aa6e3883810186d50a6",

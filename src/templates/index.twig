@@ -28,7 +28,8 @@
             label: 'Log File',
             name: 'logFile',
             id: 'logFile',
-            value: 'sync-db_' ~ siteName() ~ '_' ('now' | date('c')) ~ '.log'
+            value: 'sync-db_' ~ siteName ~ '_' ~ ('now' | date('c')) ~ '.log',
+            instructions: 'Log files are stored in CRAFT_STORAGE_PATH'
         })}}
         <button class="btn submit" type="submit">Start</button>
     </form>
