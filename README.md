@@ -2,7 +2,7 @@
 
 Craft 3 plugin to sync database across environments
 
-![Screenshot](resources/img/plugin-logo.svg)
+<img src="resources/img/plugin-logo.svg" height="200px" width="200px"/>
 
 ## Requirements
 
@@ -24,15 +24,68 @@ To install the plugin, follow these instructions.
 
 ## craft-sync-db Overview
 
--Insert text here-
+craft-sync-db uses [`unionco/syncdb`](https://github.com/unionco/syncdb) to perform database synchronization across your different environments.
 
 ## Configuring craft-sync-db
 
--Insert text here-
+ Configuration of remote servers is done via config file `<CRAFT_ROOT>/config/syncdb.php`. This file should be copied into your `config/` directory automatically. If it is deleted, you can copy it from `vendor/unionco/craft-sync-db/config/default.php`.
+
+ There are several properties needed for each environment. Given the example config:
+
+```
+<?php
+
+return [
+    'remotes' => [
+        'production' => [
+            'username' => 'user',
+            'host' => 'example.com',
+            'root' => '/path/to/project/',
+            'backupDirectory' => '/path/to/project/storage/backups/databases/',
+            'port' => 22,
+            'phpPath' => '/usr/local/bin/php',
+            'mysqlDumpPath' => '/usr/bin/mysqldump',
+            // See Symfony\Component\Console\Output\Output for verbosity options
+            'verbosity' => Output::VERBOSITY_DEBUG,
+            'environment' => CpService::ENV_PRODUCTION,
+        ],
+        // 'staging' => [
+        //     'username' => 'user',
+        //     'host' => 'staging.example.com',
+        //     'root' => '/path/to/project/',
+        //     'backupDirectory' => '/path/to/project/storage/backups/databases/',
+        //     'port' => 22,
+        //     'phpPath' => '/usr/local/bin/php',
+        //     'mysqlDumpPath' => '/usr/bin/mysqldump',
+        //     'verbosity' => Output::VERBOSITY_DEBUG,
+        //     'environment' => CpService::ENV_STAGING,
+        // ],
+    ],
+];
+```
+
+Each environment requires the following properties:
+
+| property | description |
+|---|---|
+| username | SSH/server username |
+| host | SSH/server hostname or IP |
+| root | Path of the Craft installation on the server |
+| backupDirectory | Path where database backups will be created on the remote server |
+| port | SSH port |
+| phpPath | Path to `php` executable |
+| mysqlDumpPath | Path to `mysqldump` executable |
+| verbosity | Log level |
+| environment | Determines the environment, e.g. dev, staging, production. Used so that lower environments are never synced into higher environments |
 
 ## Using craft-sync-db
 
--Insert text here-
+NOTE: `craft-sync-db` plugin must be installed on the project on the remote server as well.
+
+As of version v0.5.0, `craft-sync-db` provides a CP user interface.
+
+To use `craft-sync-db` on the command line:
+`php craft sync-db/sync <remote_key>`, where `<remote_key>` is an array key in your configuration file.
 
 ## craft-sync-db Roadmap
 

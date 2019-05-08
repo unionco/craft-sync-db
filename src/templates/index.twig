@@ -23,7 +23,7 @@
             id: 'source',
             options: syncdb.cp.sourceOptions(),
         }) }}
-        <input type="hidden" name="logFile" value="testing-{{ 'now' | date('m-d-Y-H-i-s') }}"/>
+        {# <input type="hidden" name="logFile" value="testing-{{ 'now' | date('m-d-Y-H-i-s') }}"/> #}
         {{ forms.textField({
             label: 'Log File',
             name: 'logFile',

@@ -52,8 +52,7 @@ class SyncController extends Controller
 
     public function actionBackground(string $logFile, string $env)
     {
-        // echo CRAFT_BASE_PATH; die;
-        $filePath = Craft::$app->getPath()->getStoragePath() . '/syncdb-' . $logFile;
+        $filePath = Craft::$app->getPath()->getStoragePath() . '/' . $logFile;
         $logger = new Logger('sync');
         $logger->pushHandler(new StreamHandler($filePath, Logger::INFO));
         $syncDb = SyncDbPlugin::getInstance()->syncDb;
