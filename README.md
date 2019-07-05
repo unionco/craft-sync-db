@@ -85,7 +85,7 @@ NOTE: `craft-sync-db` plugin must be installed on the project on the remote serv
 As of version v0.5.0, `craft-sync-db` provides a CP user interface.
 
 To use `craft-sync-db` on the command line:
-`php craft sync-db/sync <remote_key>`, where `<remote_key>` is an array key in your configuration file.
+`php craft sync-db/sync <remote_key> [log_level]`, where `<remote_key>` is an array key in your configuration file and `[log_level]` (optional) is one of: `verbose`, `normal`, or `quiet` .
 
 ## craft-sync-db Roadmap
 
@@ -93,4 +93,4 @@ Some things to do, and ideas for potential features:
 
 * Release it
 
-Brought to you by [Abry Rath<abryrath@gmail.com>](github.com/abryrath)
+Brought to you by [UNION](github.com/unionco)

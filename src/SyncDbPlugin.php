@@ -11,23 +11,22 @@
 namespace unionco\craftsyncdb;
 
 use Craft;
-use craft\web\View;
-use yii\base\Event;
 use craft\base\Plugin;
-use unionco\syncdb\SyncDb;
-use craft\services\Plugins;
-use craft\events\PluginEvent;
-use craft\i18n\PhpMessageSource;
-use craft\web\twig\variables\Cp;
-use unionco\craftsyncdb\models\Settings;
-use craft\events\RegisterCpNavItemsEvent;
-use unionco\craftsyncdb\services\CpService;
-use craft\events\RegisterTemplateRootsEvent;
 use craft\console\Application as ConsoleApplication;
+use craft\events\PluginEvent;
+use craft\events\RegisterCpNavItemsEvent;
+use craft\events\RegisterTemplateRootsEvent;
+use craft\events\RegisterUrlRulesEvent;
+use craft\i18n\PhpMessageSource;
+use craft\services\Plugins;
+use craft\web\twig\variables\Cp;
+use craft\web\UrlManager;
+use craft\web\View;
+use unionco\craftsyncdb\services\CpService;
 use unionco\craftsyncdb\services\Sync as SyncService;
 use unionco\craftsyncdb\twigextensions\SyncDbTwigExtension;
-use craft\web\UrlManager;
-use craft\events\RegisterUrlRulesEvent;
+use unionco\syncdb\SyncDb;
+use yii\base\Event;
 
 /**
  * Class Craftsyncdb
@@ -84,7 +83,7 @@ class SyncDbPlugin extends Plugin
         Event::on(
             View::class,
             View::EVENT_REGISTER_CP_TEMPLATE_ROOTS,
-            function(RegisterTemplateRootsEvent $event) {
+            function (RegisterTemplateRootsEvent $event) {
                 $event->roots['sync-db'] = $this->getBasePath() . '/templates';
             }
         );
@@ -99,7 +98,9 @@ class SyncDbPlugin extends Plugin
     {
         parent::init();
         self::$plugin = $this;
-
+        
+        $this->checkConfigFileExists();
+        
         /** @psalm-suppress UndefinedClass */
         if (!$this->syncDb) {
             $this->syncDb = new SyncDb([
@@ -125,15 +126,7 @@ class SyncDbPlugin extends Plugin
             Plugins::EVENT_AFTER_INSTALL_PLUGIN,
             function (PluginEvent $event) {
                 if ($event->plugin === $this) {
-                    /** @psalm-suppress UndefinedClass */
-                    $configFilePath = Craft::$app->getPath()->getConfigPath() . '/syncdb.php';
-                    if (!file_exists($configFilePath)) {
-                        $defaultConfigPath = $this->basePath . '/config/default.php';
-                        if (!file_exists($defaultConfigPath)) {
-                            throw new \Exception("Default configuration not found");
-                        }
-                        copy($defaultConfigPath, $configFilePath);
-                    }
+                    $this->checkConfigFileExists();
                 }
             }
         );
@@ -171,16 +164,21 @@ class SyncDbPlugin extends Plugin
         );
     }
 
-    // /**
-    //  * @return Settings
-    //  */
-    // public function getSettings(): Settings
-    // {
-    //     return $this->settings
-    // }
-
     public static function getInstance(): SyncDbPlugin
     {
         return self::$plugin;
+    }
+
+    public function checkConfigFileExists()
+    {
+        /** @psalm-suppress UndefinedClass */
+        $configFilePath = Craft::$app->getPath()->getConfigPath() . '/syncdb.php';
+        if (!file_exists($configFilePath)) {
+            $defaultConfigPath = $this->basePath . '/config/default.php';
+            if (!file_exists($defaultConfigPath)) {
+                throw new \Exception("Default configuration not found");
+            }
+            copy($defaultConfigPath, $configFilePath);
+        }
     }
 }

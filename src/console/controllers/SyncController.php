@@ -16,6 +16,7 @@ use yii\helpers\Console;
 use yii\console\Controller;
 use Monolog\Handler\StreamHandler;
 use unionco\craftsyncdb\SyncDbPlugin;
+use Symfony\Component\Console\Output\Output;
 
 /**
  * Sync Command
@@ -29,12 +30,27 @@ class SyncController extends Controller
     /** 
      * @param string $environment
      * @return int */
-    public function actionIndex($environment = 'production')
+    public function actionIndex($environment = 'production', string $verbosity = 'normal')
     {
+        $verbosityLevel = null;
+        if ($verbosity) {
+            $input = trim($verbosity);
+            switch ($input) {
+                case 'quiet':
+                    $verbosityLevel = Output::VERBOSITY_QUIET;
+                    break;
+                case 'normal':
+                    $verbosityLevel = Output::VERBOSITY_NORMAL;
+                    break;
+                case 'verbose':
+                    $verbosityLevel = Output::VERBOSITY_VERBOSE;
+                    break;
+            }
+        }
         /** @var \unionco\syncdb\SyncDb */
         $syncDb = SyncDbPlugin::$plugin->syncDb;
         
-        $syncDb->sync(null, $environment);
+        $syncDb->sync(null, $environment, false, $verbosityLevel);
 
         return self::EXIT_CODE_NORMAL;
     }
