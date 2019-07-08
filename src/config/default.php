@@ -11,7 +11,7 @@ use unionco\craftsyncdb\services\CpService;
 
  return [
     'globals' => [
-        // Array of tables to ignore in dump, format: "{DatabaseName}.{TableName}"
+        // Array of tables to ignore in dump
         'ignoredTables' => [],
     ],
     'remotes' => [

@@ -20,7 +20,7 @@
     }],
     "require": {
         "craftcms/cms": "^3.0.0-RC1",
-        "unionco/syncdb": "^0.6.0",
+        "unionco/syncdb": "^0.6.1",
         "monolog/monolog": "^1.24",
         "scrivo/highlight.php": "v9.15.6.1"
     },
