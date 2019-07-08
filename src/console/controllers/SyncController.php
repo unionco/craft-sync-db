@@ -10,11 +10,13 @@
 
 namespace unionco\craftsyncdb\console\controllers;
 
-use unionco\craftsyncdb\SyncDb;
-use unionco\craftsyncdb\util\Logger;
 use Craft;
-use yii\console\Controller;
+use Monolog\Logger;
 use yii\helpers\Console;
+use yii\console\Controller;
+use Monolog\Handler\StreamHandler;
+use unionco\craftsyncdb\SyncDbPlugin;
+use Symfony\Component\Console\Output\Output;
 
 /**
  * Sync Command
@@ -25,27 +27,61 @@ use yii\helpers\Console;
  */
 class SyncController extends Controller
 {
-    /** 
-     * @param string $environment
-     * @return bool */
-    public function actionIndex($environment = 'production')
+    private function verbosity(string $verbosity): ?int
     {
-        /** @var \unionco\syncdb\SyncDb */
-        $syncDb = SyncDb::$plugin->syncDb;
-        
-        $syncDb->sync(null, $environment);
+        $verbosityLevel = null;
+        if ($verbosity) {
+            $input = trim($verbosity);
+            switch ($input) {
+                case 'quiet':
+                    $verbosityLevel = Output::VERBOSITY_QUIET;
+                    break;
+                case 'normal':
+                    $verbosityLevel = Output::VERBOSITY_NORMAL;
+                    break;
+                case 'verbose':
+                    $verbosityLevel = Output::VERBOSITY_VERBOSE;
+                    break;
+            }
+        }
 
-        return true;
+        return $verbosityLevel;
     }
 
-    /** @return bool */
-    public function actionDumpmysql()
+    /** 
+     * @param string $environment
+     * @return int */
+    public function actionIndex($environment = 'production', string $verbosity = 'normal')
     {
-        /** @var \unionco\syncdb\SyncDb */
-        $syncDb = SyncDb::$plugin->syncDb;
-        
-        $syncDb->dump();
+        $verbosityLevel = $this->verbosity($verbosity);
 
-        return true;
+        /** @var \unionco\syncdb\SyncDb */
+        $syncDb = SyncDbPlugin::$plugin->syncDb;
+        
+        $syncDb->sync(null, $environment, false, $verbosityLevel);
+
+        return self::EXIT_CODE_NORMAL;
+    }
+
+    /** @return int */
+    public function actionDumpmysql(string $verbosity = 'normal')
+    {
+        $verbosityLevel = $this->verbosity($verbosity);
+        
+        /** @var \unionco\syncdb\SyncDbPlugin */
+        $syncDb = SyncDbPlugin::$plugin->syncDb;
+        
+        $syncDb->dump(null, $verbosityLevel);
+
+        return self::EXIT_CODE_NORMAL;
+    }
+
+    public function actionBackground(string $logFile, string $env)
+    {
+        $filePath = Craft::$app->getPath()->getStoragePath() . '/' . $logFile;
+        $logger = new Logger('sync');
+        $logger->pushHandler(new StreamHandler($filePath, Logger::INFO));
+        $syncDb = SyncDbPlugin::getInstance()->syncDb;
+        $syncDb->sync($logger, $env);
     }
 }

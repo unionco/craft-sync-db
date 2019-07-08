@@ -14,19 +14,19 @@
         "issues": "https://github.com/unionco/craft-sync-db"
     },
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Abry Rath<abryrath@gmail.com>",
-            "homepage": "https://github.com/unionco"
-        }
-    ],
+    "authors": [{
+        "name": "Abry Rath<abryrath@gmail.com>",
+        "homepage": "https://github.com/unionco"
+    }],
     "require": {
         "craftcms/cms": "^3.0.0-RC1",
-        "unionco/syncdb": "@dev"
+        "unionco/syncdb": "^0.6.0",
+        "monolog/monolog": "^1.24",
+        "scrivo/highlight.php": "v9.15.6.1"
     },
     "autoload": {
         "psr-4": {
-          "unionco\\craftsyncdb\\": "src/"
+            "unionco\\craftsyncdb\\": "src/"
         }
     },
     "extra": {
@@ -38,7 +38,7 @@
         "components": {
             "sync": "unionco\\craftsyncdb\\services\\Sync"
         },
-        "class": "unionco\\craftsyncdb\\SyncDb"
+        "class": "unionco\\craftsyncdb\\SyncDbPlugin"
     },
     "require-dev": {
         "vimeo/psalm": "^3.0"

@@ -9,7 +9,11 @@ use unionco\craftsyncdb\services\CpService;
  *  overwritten
  **/
 
-return [
+ return [
+    'globals' => [
+        // Array of tables to ignore in dump, format: "{DatabaseName}.{TableName}"
+        'ignoredTables' => [],
+    ],
     'remotes' => [
         'production' => [
             'username' => 'user',
@@ -22,8 +26,6 @@ return [
             // See Symfony\Component\Console\Output\Output for verbosity options
             'verbosity' => Output::VERBOSITY_DEBUG,
             'environment' => CpService::ENV_PRODUCTION,
-            // Array of tables to ignore in dump, format: "{DatabaseName}.{TableName}"
-            'ignoredTables' => [],
         ],
         // 'staging' => [
         //     'username' => 'user',
