@@ -1,6 +1,7 @@
 <?php
 
 use Symfony\Component\Console\Output\Output;
+use unionco\craftsyncdb\services\CpService;
 
 /**
  *  This is the default configuration that will be copied into your Craft
@@ -20,6 +21,9 @@ return [
             'mysqlDumpPath' => '/usr/bin/mysqldump',
             // See Symfony\Component\Console\Output\Output for verbosity options
             'verbosity' => Output::VERBOSITY_DEBUG,
+            'environment' => CpService::ENV_PRODUCTION,
+            // Array of tables to ignore in dump, format: "{DatabaseName}.{TableName}"
+            'ignoredTables' => [],
         ],
         // 'staging' => [
         //     'username' => 'user',
@@ -30,6 +34,7 @@ return [
         //     'phpPath' => '/usr/local/bin/php',
         //     'mysqlDumpPath' => '/usr/bin/mysqldump',
         //     'verbosity' => Output::VERBOSITY_DEBUG,
+        //     'environment' => CpService::ENV_STAGING,
         // ],
     ],
 ];
