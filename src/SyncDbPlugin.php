@@ -138,7 +138,7 @@ class SyncDbPlugin extends Plugin
                 $event->navItems[] = [
                     'url' => 'sync-db',
                     'label' => 'Sync Database',
-                    'icon' => '@plugins/sync-db/../resources/img/plugin-logo.svg',
+                    'icon' => '@plugins/sync-db/icon-mask.svg',
                 ];
             }
         );
