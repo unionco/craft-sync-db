@@ -64,14 +64,14 @@ class SyncController extends Controller
     }
 
     /** @return int */
-    public function actionDump(string $verbosity = 'normal')
+    public function actionDump(string $verbosity = 'normal', bool $remote = false)
     {
         $verbosityLevel = $this->verbosity($verbosity);
         
         /** @var \unionco\syncdb\SyncDbPlugin */
         $syncDb = SyncDbPlugin::$plugin->syncDb;
         
-        $syncDb->dump(null, $verbosityLevel);
+        $syncDb->dump(null, $verbosityLevel, $remote);
 
         return self::EXIT_CODE_NORMAL;
     }
