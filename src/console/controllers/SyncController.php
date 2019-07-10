@@ -64,7 +64,7 @@ class SyncController extends Controller
     }
 
     /** @return int */
-    public function actionDumpmysql(string $verbosity = 'normal')
+    public function actionDump(string $verbosity = 'normal')
     {
         $verbosityLevel = $this->verbosity($verbosity);
         

@@ -12,7 +12,11 @@ use unionco\craftsyncdb\services\CpService;
  return [
     'globals' => [
         // Array of tables to ignore in dump
-        'ignoredTables' => [],
+        'ignoredTables' => [
+            'craft_templatecaches',
+            'craft_templatecachequeries',
+            'craft_templatecacheelements',
+        ],
     ],
     'remotes' => [
         'production' => [
