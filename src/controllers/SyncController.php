@@ -5,10 +5,11 @@ use Craft;
 use Monolog\Logger;
 use craft\helpers\Json;
 use craft\web\Controller;
+use Highlight\Highlighter;
 use unionco\syncdb\SyncDb;
 use Monolog\Handler\StreamHandler;
 use unionco\craftsyncdb\SyncDbPlugin;
-use Highlight\Highlighter;
+use unionco\craftsyncdb\jobs\SyncDbJob;
 
 class SyncController extends Controller
 {
@@ -17,97 +18,81 @@ class SyncController extends Controller
     /** @var SyncDb $syncDb */
     public static $syncDb;
 
+    /** @var null|string $filePath */
+    protected static $filePath = null;
+
+    /** @var bool $complete */
+    protected static $complete = false;
+
+    const RESULT_FINISHED = 0;
+    const RESULT_NOT_RUNNING = 1;
+    const RESULT_RUNNING = 2;
+
+    private static function logPath(string $fileName): string
+    {
+        return Craft::$app->getPath()->getStoragePath() . '/syncdb-' . $fileName;
+    }
+
     public function actionInit()
     {
         $this->requirePostRequest();
-
-        //var_dump(Craft::$app->getRequest()); die;
-        //$logFile = Craft::$app->getRequest()->getRequiredBodyParam('logFile');
+        static::$complete = false;
         $logFile = Craft::$app->getRequest()->getBodyParam('logFile');
-        //$env = Craft::$app->getRequest()->getRequiredBodyParam('env');
         $env = Craft::$app->getRequest()->getBodyParam('env');
-        // $jsonBody = Craft::$app->getRequest()->getRawBody();
-        // $body = Json::decode($jsonBody, false);
         if (!self::$syncDb) {
             self::$syncDb = SyncDbPlugin::getInstance()->syncDb;
         }
 
-        // if (!self::$syncDb->running() && !self::$syncDb->)
-        $filePath = Craft::$app->getPath()->getStoragePath() . '/syncdb-' . $logFile;
-        // $logger = new Logger('sync');
-        // $logger->pushHandler(new StreamHandler($filePath, Logger::INFO));
-
-        $errors = null;
-        $success = null;
-        $complete = null;
-        $logOutput = null;
+        static::$filePath = static::logPath($logFile);
 
         if (!self::$syncDb->running() && !self::$syncDb->success()) {
-            // Not started yet
-            //$cmd  = 'php ' . CRAFT_BASE_PATH . '/craft sync-db/sync/background ' . $filePath . ' ' . $env . ' > /dev/null &';
-            //echo $cmd; die;
-            //exec($cmd);
+            $job = new SyncDbJob();
+            $job->env = $env;
+            $job->filePath = static::$filePath;
 
-
-            // $filePath = Craft::$app->getPath()->getStoragePath() . '/syncdb-' . $logFile;
-            $logger = new Logger('sync');
-            $logger->pushHandler(new StreamHandler($filePath, Logger::INFO));
-            $syncDb = SyncDbPlugin::getInstance()->syncDb;
-            $syncDb->sync($logger, $env);
+            Craft::$app->getQueue()->push($job);
+            Craft::$app->getQueue()->run();
         }
-        //return Json::encode(['success' => true]);
-
-        // Testing out highlight.php
-        $highlighter = new Highlighter();
-        $logOutput = file_get_contents($filePath);
-
-        $highlightResult = $highlighter->highlight('accesslog', $logOutput);
-        $output = '<pre><code class="hljs '. $highlightResult->language . '">';
-        $output .= $highlightResult->value;
-        $output .= '</code></pre>';
-        return $this->renderTemplate('sync-db/index', [
+        $output = file_get_contents(static::$filePath);
+        return $this->asJson([
+            'result' => self::RESULT_FINISHED,
             'output' => $output,
+            'debugFilePath' => static::$filePath,
         ]);
     }
 
     public function actionStatus()
     {
-        // return Json::encode(['hello' => 'world']);
         $this->requirePostRequest();
+        $logFile = Craft::$app->getRequest()->getBodyParam('logFile');
+        static::$filePath = static::logPath($logFile);
 
-        //var_dump(Craft::$app->getRequest()); die;
-        $logFile = Craft::$app->getRequest()->getRequiredBodyParam('logFile');
-        $env = Craft::$app->getRequest()->getRequiredBodyParam('env');
-        // $jsonBody = Craft::$app->getRequest()->getRawBody();
-        // $body = Json::decode($jsonBody, false);
-        if (!self::$syncDb) {
-            self::$syncDb = SyncDbPlugin::getInstance()->syncDb;
+        if (!static::$filePath) {
+            return $this->asJson([
+                'result' => self::RESULT_NOT_RUNNING,
+                'debugFilePath' => static::$filePath,
+            ]);
+        }
+        $logContents = '';
+        try {
+            $logContents = file_get_contents(static::$filePath);
+        } catch (\Exception $e) {
+            return $this->asJson([
+                'result' => self::RESULT_RUNNING,
+                'output' => $logContents,
+            ]);
         }
 
-        // if (!self::$syncDb->running() && !self::$syncDb->)
-        $filePath = Craft::$app->getPath()->getStoragePath() . '/syncdb-' . $logFile;
-        $logger = new Logger('sync');
-        $logger->pushHandler(new StreamHandler($filePath, Logger::INFO));
-
-        $errors = null;
-        $success = null;
-        $complete = null;
-        $logOutput = null;
-
-        if (self::$syncDb->success()) {
-            $complete = true;
-            $success = true;
-            // Finished with success
-        } elseif (self::$syncDb->running()) {
-            $complete = false;
-            // Still running
-        } else {
-            $errors = true;
-            $complete = true;
-            $success = false;
-            // Finished with error
+        if (strpos($logContents, 'Craft SyncDB Complete') !== false) {
+            return $this->asJson([
+                'result' => self::RESULT_FINISHED,
+                'output' => $logContents,
+            ]);
         }
-        $logOutput = \nl2br(\file_get_contents($filePath));
-        return Json::encode(compact('errors', 'success', 'complete', 'logOutput'));
+
+        return $this->asJson([
+            'result' => self::RESULT_RUNNING,
+            'output' => $logContents,
+        ]);
     }
 }

@@ -13,6 +13,7 @@ namespace unionco\craftsyncdb\console\controllers;
 use Craft;
 use Monolog\Logger;
 use yii\helpers\Console;
+use unionco\syncdb\SyncDb;
 use yii\console\Controller;
 use Monolog\Handler\StreamHandler;
 use unionco\craftsyncdb\SyncDbPlugin;
@@ -55,7 +56,7 @@ class SyncController extends Controller
     {
         $verbosityLevel = $this->verbosity($verbosity);
 
-        /** @var \unionco\syncdb\SyncDb */
+        /** @var SyncDb */
         $syncDb = SyncDbPlugin::$plugin->syncDb;
         
         $syncDb->sync(null, $environment, false, $verbosityLevel);

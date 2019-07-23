@@ -147,7 +147,9 @@ class SyncDbPlugin extends Plugin
             UrlManager::class,
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['sync-db/init'] = 'sync-db/sync/init';
+                // URL: /admin/sync-db/start
+                $event->rules['sync-db/sync/start'] = 'sync-db/sync/init';
+                $event->rules['sync-db/sync/status'] = 'sync-db/sync/status';
                 $event->rules['sync-db/status'] = 'sync-db/sync/status';
             }
         );

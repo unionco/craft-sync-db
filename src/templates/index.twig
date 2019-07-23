@@ -13,7 +13,7 @@
         {{ output | raw }}
         
     {% endif %}
-    <form data-sync-db method="POST" action="/admin/sync-db/init">
+    <form data-sync-db method="POST" action="/admin/sync-db/sync">
         {{ csrfInput() }}
         {{ redirectInput('/admin/sync-db/') }}
         <input type="hidden" name="timeoutInMs" value="1000"/>
