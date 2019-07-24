@@ -31,10 +31,12 @@ class Poll {
     public statusText: HTMLDivElement;
     public spinner: HTMLDivElement;
     public redirectUrl: string;
+    public cpTrigger: string;
 
     constructor(root: HTMLDivElement) {
         this.formData = new FormData(document.querySelector('#poll-form'));
         this.root = root;
+        this.cpTrigger = root.dataset.cpTrigger;
         this.timeoutInMs = 500;
         this.spinner = document.querySelector('#spinner');
         this.statusText = document.querySelector('#status');
@@ -49,7 +51,7 @@ class Poll {
         if (initial) {
             this.spinner.classList.remove('hidden');
             this.statusText.innerText = 'Running sync...';
-            fetch('/admin/sync-db/sync/start', {
+            fetch(`/${this.cpTrigger}/sync-db/sync/start`, {
                 method: 'POST',
                 credentials: 'same-origin',
                 body: this.formData
@@ -65,7 +67,7 @@ class Poll {
             });
         }
 
-        fetch('/admin/sync-db/sync/status', {
+        fetch(`/${this.cpTrigger}/sync-db/sync/status`, {
             method: 'POST',
             credentials: 'same-origin',
             body: this.formData
@@ -99,7 +101,7 @@ class Poll {
 
     static formatOutput(rawOutput: string): string {
         return rawOutput.trimLeft();
-    }
+        }
 }
 
 const form: HTMLFormElement = document.querySelector('form[data-sync-db]');

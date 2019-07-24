@@ -13,9 +13,9 @@
         {{ output | raw }}
         
     {% endif %}
-    <form data-sync-db method="POST" action="/admin/sync-db/sync">
+    <form data-sync-db method="POST" action="/{{ craft.app.config.general.cpTrigger }}/sync-db/sync">
         {{ csrfInput() }}
-        {{ redirectInput('/admin/sync-db/') }}
+        {{ redirectInput('/' ~ craft.app.config.general.cpTrigger ~ '/sync-db/') }}
         <input type="hidden" name="timeoutInMs" value="1000"/>
         {{ forms.selectField({
             label: 'Source',
