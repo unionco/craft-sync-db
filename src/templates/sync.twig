@@ -2,29 +2,110 @@
 
 {% set title = "Sync Database" %}
 
-{% do view.registerAssetBundle('unionco\\craftsyncdb\\assetbundles\\cp\\CpAsset') %}
 
 {% block content %}
 
-    <div id="vue-sync-root" data-redirect-url="/{{ craft.app.config.general.cpTrigger }}/sync-db" data-cp-trigger="{{ craft.app.config.general.cpTrigger }}">
-        <div class="field" data-status>
-            <div class="heading">
-                <label for="status">Status</label>
-            </div>
-            <div id="status" v-html="statusText"></div>
+<div id = "vue-sync-output" data-redirect-url="/{{ craft.app.config.general.cpTrigger }}/sync-db" data-cp-trigger="{{ craft.app.config.general.cpTrigger }}">
+    <div class="field" data-status>
+        <div class = "heading" >
+            <label for="status">Status</label>
         </div>
-
-        <div class="field">
-            <div class="heading">
-                <label>Output</label>
-            </div>
-            <div class="spinner" id="spinner" v-if="showSpinner"></div>
-            <pre><code v-html="logOutput"></code></pre>
-        </div>
+        <div id="status" v-html="statusText"></div>
     </div>
-    <form id="poll-form">
-        {{ csrfInput() }}
-        <input type="hidden" name="logFile" value="{{ craft.app.request.getBodyParam('logFile') }}">
-        <input type="hidden" name="env" value="{{ craft.app.request.getBodyParam('env') }}">
-    </form>
+    <div class="field">
+        <div class = "heading" >
+            <label>Output</label>
+        </div>
+    <div class="spinner" id="spinner" v-if="showSpinner"></div>
+    <pre><code v-html="logOutput"></code></pre>
+    </div>
+</div>
+<form id="poll-form">
+    {{ csrfInput() }}
+    <input type="hidden" name="logFile" value="{{ craft.app.request.getBodyParam('logFile') }}">
+    <input type="hidden" name="env" value="{{ craft.app.request.getBodyParam('env') }}">
+</form>
 {% endblock %}
+
+{% do craft.app.view.registerAssetBundle('craft\\web\\assets\\vue\\VueAsset') %}
+{% js %}
+new Vue({
+    data: {
+        statusText: 'Initializing',
+        showSpinner: false,
+        logOutput: '',
+        cpTrigger: 'admin',
+        formData: undefined,
+        secondsBeforeRedirect: 100,
+        redirectUrl: ''
+    },
+    el: '#vue-sync-output',
+    created: function () {
+        const root = document.querySelector('#vue-sync-output');
+        if (root) {
+            this.cpTrigger = root.dataset.cpTrigger;
+            this.redirectUrl = root.dataset.redirectUrl;
+        }
+        const form = document.querySelector('#poll-form');
+        if (form) {
+            this.formData = new FormData(form);
+        }
+    },
+    mounted: function () {
+        this.makeRequest(true);
+    },
+    methods: {
+        makeRequest: function (initial = true) {
+            if (initial) {
+                this.showSpinner = true;
+                this.statusText = 'Running Sync';
+
+                fetch(`/${this.cpTrigger}/sync-db/sync/start`, {
+                        method: 'POST',
+                        credentials: 'same-origin',
+                        body: this.formData
+                    })
+                    .then((resp) => resp.json())
+                    .then((json) => {
+                        this.showSpinner = false;
+                        if (json.output) {
+                            this.logOutput = json.output;
+                        }
+                    });
+            }
+
+            fetch(`/${this.cpTrigger}/sync-db/sync/status`, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    body: this.formData
+                })
+                .then((resp) => resp.json())
+                .then((json) => {
+                    if (initial || json.result == 2) {
+                        setTimeout(() => this.makeRequest(false), 500);
+                    }
+                    if (json.output) {
+                        const output = json.output;
+                        if (output.length > this.logOutput.length) {
+                            this.logOutput = output;
+                        }
+                    }
+                })
+                .catch(err => {
+                    this.logOutput += '\n\nSync Complete - Page will reload and you will need to sign in again';
+                    this.redirect();
+                });
+        },
+        redirect: function () {
+            if (this.secondsBeforeRedirect < 1) {
+                window.location.href = this.redirectUrl;
+            }
+            this.statusText = `Redirecting in ${this.secondsBeforeRedirect} seconds`;
+            setTimeout(() => {
+                this.secondsBeforeRedirect--;
+                this.redirect();
+            }, 1000);
+        }
+    }
+});
+{% endjs %}

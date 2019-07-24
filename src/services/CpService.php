@@ -3,8 +3,10 @@
 namespace unionco\craftsyncdb\services;
 
 use Craft;
+use craft\helpers\Json;
 use craft\base\Component;
 use unionco\craftsyncdb\SyncDbPlugin;
+use unionco\syncdb\models\Environment;
 
 class CpService extends Component
 {
@@ -48,6 +50,7 @@ class CpService extends Component
             $options[] = [
                 'label' => $env->host . ' (' . $key . ')',
                 'value' => $key,
+                // 'data-env' => Json::encode($env)
             ];
         }
 
@@ -64,4 +67,16 @@ class CpService extends Component
             return self::ENV_DEV;
         }
     }
+
+    public function getEnvironmentSettingsHtml(Environment $env)
+    {
+        $output = '<table>';
+        foreach (get_object_vars($env) as $name => $val) {
+            $output .= "<tr><td class=\"settings-name\">$name</td><td class=\"settings-value\">{$val}</td></tr>";
+        }
+        $output .= "</table>";
+
+        return $output;
+    }
 }
+
