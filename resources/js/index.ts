@@ -1,115 +1,87 @@
-import 'highlight.js/styles/default.css';
-class Form {
-    public node: HTMLFormElement;
-    public submitButton: HTMLButtonElement;
-
-    constructor(node: HTMLFormElement) {
-        this.node = node;
-        this.submitButton = node.querySelector('button[type="submit"]');
-        this.startSync = this.startSync.bind(this);
-        this.node.addEventListener('submit', this.startSync);
-    }
-
-    startSync(e: Event) {
-        this.submitButton.classList.add('disabled');
-        this.submitButton.disabled = true;
-    }
-}
+import Vue from 'vue';
 
 interface IPollResponse {
     output: string;
     result: number;
 }
 
-class Poll {
-    public timeoutInMs: number;
-    public continue: boolean = true;
-    public formData: FormData;
-    public root: HTMLDivElement;
-    public outputContainer: HTMLElement;
-    public output: string;
-    public statusText: HTMLDivElement;
-    public spinner: HTMLDivElement;
-    public redirectUrl: string;
-    public cpTrigger: string;
-
-    constructor(root: HTMLDivElement) {
-        this.formData = new FormData(document.querySelector('#poll-form'));
-        this.root = root;
-        this.cpTrigger = root.dataset.cpTrigger;
-        this.timeoutInMs = 500;
-        this.spinner = document.querySelector('#spinner');
-        this.statusText = document.querySelector('#status');
-        this.outputContainer = document.querySelector('[data-output]');
-        this.redirectUrl = this.root.dataset.redirectUrl;
-        this.makeRequest = this.makeRequest.bind(this);
-        this.redirect = this.redirect.bind(this);
-        this.makeRequest();
-    }
-
-    makeRequest(initial: boolean = true) {
-        if (initial) {
-            this.spinner.classList.remove('hidden');
-            this.statusText.innerText = 'Running sync...';
-            fetch(`/${this.cpTrigger}/sync-db/sync/start`, {
+const vm = new Vue({
+    data: {
+        statusText: 'Initializing',
+        showSpinner: false,
+        logOutput: '',
+        cpTrigger: 'admin',
+        formData: undefined,
+        secondsBeforeRedirect: 10,
+        redirectUrl: ''
+    },
+    el: '#vue-sync-root',
+    created: function () {
+        const root: HTMLDivElement = document.querySelector('#vue-sync-root');
+        if (root) {
+            this.cpTrigger = root.dataset.cpTrigger as string;
+            this.redirectUrl = root.dataset.redirectUrl as string; 
+        }
+        const form: HTMLFormElement = document.querySelector('#poll-form');
+        if (form) {
+            this.formData = new FormData(form);
+        }
+    },
+    mounted: function () {
+        this.makeRequest(true);
+    },
+    methods: {
+        makeRequest: function (initial: boolean = true) {
+            if (initial) {
+                this.showSpinner = true;
+                this.statusText = 'Running Sync';
+                
+                fetch(`/${this.cpTrigger}/sync-db/sync/start`, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    body: this.formData
+                })
+                .then((resp: Response) => resp.json())
+                .then((json: IPollResponse) => {
+                    this.showSpinner = false;
+                    if (json.output) {
+                        // const output = Poll.formatOutput(json.output);
+                        this.logOutput = json.output;
+                    }
+                });
+            }
+    
+            fetch(`/${this.cpTrigger}/sync-db/sync/status`, {
                 method: 'POST',
                 credentials: 'same-origin',
                 body: this.formData
             })
-            .then((resp: Response) => resp.json())
-            .then((json: IPollResponse) => {
-                this.spinner.classList.add('hidden');
-                if (json.output) {
-                    const output = Poll.formatOutput(json.output);
-                    this.output = output;
-                    this.outputContainer.innerHTML = output;
-                }
-            });
-        }
-
-        fetch(`/${this.cpTrigger}/sync-db/sync/status`, {
-            method: 'POST',
-            credentials: 'same-origin',
-            body: this.formData
-        })
-            .then((resp: Response) => resp.json())
-            .then((json: IPollResponse) => {
-                if (initial || json.result == 2) {
-                    setTimeout(() => this.makeRequest(false), this.timeoutInMs);
-                }
-                if (json.output) {
-                    const output = Poll.formatOutput(json.output);
-                    if (output.length > this.output.length) {
-                        this.output = output;
+                .then((resp: Response) => resp.json())
+                .then((json: IPollResponse) => {
+                    if (initial || json.result == 2) {
+                        setTimeout(() => this.makeRequest(false), 500);
                     }
-                    this.outputContainer.innerHTML = this.output;
-                }
-            })
-            .catch(err => {
-                this.outputContainer.innerHTML += 'Sync Complete - Page will reload and you will need to sign in again';
-                this.redirect(this.redirectUrl, 5);
-            });
-    }
-
-    redirect(url: string, secondsRemaining: number) {
-        if (secondsRemaining < 1) {
-            window.location.href = url;
+                    if (json.output) {
+                        const output = json.output;
+                        if (output.length > this.logOutput.length) {
+                            this.logOutput = output;
+                        }
+                    }
+                })
+                .catch(err => {
+                    this.logOutput += '\n\nSync Complete - Page will reload and you will need to sign in again';
+                    this.redirect();
+                });
+        },
+        redirect: function () {
+            if (this.secondsBeforeRedirect < 1) {
+                window.location.href = this.redirectUrl;
+            }
+            this.statusText = `Redirecting in ${this.secondsBeforeRedirect} seconds`;
+            setTimeout(() => {
+                this.secondsBeforeRedirect--;
+                this.redirect();
+            }, 1000);
         }
-        this.statusText.innerText = `Redirecting in ${secondsRemaining} seconds`;
-        setTimeout(() => this.redirect(url, secondsRemaining - 1), 1000);
     }
-
-    static formatOutput(rawOutput: string): string {
-        return rawOutput.trimLeft();
-        }
-}
-
-const form: HTMLFormElement = document.querySelector('form[data-sync-db]');
-if (form) {
-    new Form(form);
-}
-
-const pollRoot: HTMLDivElement = document.querySelector('#vue-sync-root');
-if (pollRoot) {
-    new Poll(pollRoot);
-}
+});

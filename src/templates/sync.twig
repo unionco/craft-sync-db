@@ -5,25 +5,26 @@
 {% do view.registerAssetBundle('unionco\\craftsyncdb\\assetbundles\\cp\\CpAsset') %}
 
 {% block content %}
-    
+
     <div id="vue-sync-root" data-redirect-url="/{{ craft.app.config.general.cpTrigger }}/sync-db" data-cp-trigger="{{ craft.app.config.general.cpTrigger }}">
-        <div data-status class="field">
+        <div class="field" data-status>
             <div class="heading">
                 <label for="status">Status</label>
             </div>
-            <div id="status">Initializing...</div>
-            <div id="spinner" class="spinner hidden"></div>
+            <div id="status" v-html="statusText"></div>
         </div>
-        <form id="poll-form">
-            {{ csrfInput() }}
-            <input type="hidden" name="logFile" value="{{ craft.app.request.getBodyParam('logFile') }}">
-            <input type="hidden" name="env" value="{{ craft.app.request.getBodyParam('env') }}">
-        </form>
+
         <div class="field">
             <div class="heading">
                 <label>Output</label>
-                </div>
-            <pre><code data-output></code></pre>
+            </div>
+            <div class="spinner" id="spinner" v-if="showSpinner"></div>
+            <pre><code v-html="logOutput"></code></pre>
         </div>
     </div>
+    <form id="poll-form">
+        {{ csrfInput() }}
+        <input type="hidden" name="logFile" value="{{ craft.app.request.getBodyParam('logFile') }}">
+        <input type="hidden" name="env" value="{{ craft.app.request.getBodyParam('env') }}">
+    </form>
 {% endblock %}

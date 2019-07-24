@@ -5,7 +5,8 @@
   "description": "",
   "dependencies": {
     "@union/cli": "^0.9.6",
-    "highlight.js": "^9.15.6"
+    "highlight.js": "^9.15.6",
+    "vue": "^2.6.10"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^4.6.0",
