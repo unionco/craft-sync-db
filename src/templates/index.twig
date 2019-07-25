@@ -2,107 +2,20 @@
 
 {% set title = "Sync Database" %}
 
-{# {% do view.registerAssetBundle('unionco\\craftsyncdb\\assetbundles\\cp\\CpAsset') %} #}
-
 {% block content %}
     {% import "_includes/forms" as forms %}
     {% set sources = syncdb.cp.sourceOptions %}
-    <div class="container" id="vue-sync-settings" data-sources="{{ sources | json_encode }}" data-timestamp="{{ 'now' | date('Y-m-d_H:i:s') }}">
-        <div class="col">
-            <form action="/{{ craft.app.config.general.cpTrigger }}/sync-db/sync" data-sync-db method="POST">
-                {{ csrfInput() }}
-                {{ redirectInput('/' ~ craft.app.config.general.cpTrigger ~ '/sync-db/') }}
-                <input name="timeoutInMs" type="hidden" value="1000"/>
-                <div id="source-field" class="field">
-                    <div class="heading">
-                        <label id="source-label" for="source">Source</label>
-                    </div>
-                    <div class="input ltr">
-                        <div class="select">
-                            <select id="source" name="env" @change="sourceChanged">
-                                {% for option in sources %}
-                                    <option value="{{ option.value }}">{{ option.label }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="logFile-field" class="field">
-                    <div class="heading">
-                        <label id="logFile-label" for="logFile">Log File</label>
-                        <div class="instructions">
-                            <p>Log files are stored in CRAFT_STORAGE_PATH (/Users/abryrath/Union/Sites/craft3-sandbox/storage)</p>
-                        </div>
-                    </div>
-                    <div class="input ltr">
-                        <input type="text" id="logFile" name="logFile" v-model="logFileName" autocomplete="off" class="text fullwidth">
-                    </div>
-                </div>
-                <button class="btn submit" type="submit">Start</button>
-            </form>
+    {% set timestamp = 'now' | date('Y-m-d_H:i:s') %}
+    <form action="/{{ craft.app.config.general.cpTrigger }}/sync-db/sync" data-sync-db method="POST">
+        {{ csrfInput() }}
+        {{ redirectInput('/' ~ craft.app.config.general.cpTrigger ~ '/sync-db/') }}
+        <div id="vue-sync-settings">
+            <sync-settings sources-json="{{ sources | json_encode }}" timestamp="{{ timestamp }}" storage-path="test"></sync-settings>
         </div>
-        <div class="col">
-            <div id="source-field" class="field">
-                <div class="heading">
-                    <label>Configuration</label>
-                </div>
-            </div>
-           {% for env in syncdb.syncDb.getSettings.environments %}
-                <div v-if="selectedSource == '{{env.environment}}'">{{ syncdb.cp.getEnvironmentSettingsHtml(env)|raw }}</div>
-           {% endfor %}
-        </div>
-    </div>
+     </form>
 {% endblock %}
 
-{% do craft.app.view.registerAssetBundle('craft\\web\\assets\\vue\\VueAsset') %}
+{% do view.registerAssetBundle("unionco\\craftsyncdb\\assetbundles\\cp\\CpAsset") %}
 {% js %}
-new Vue({
-    data: {
-        sources: [],
-        selectedSource: '',
-        timestamp: '',
-    },
-    computed: {
-        logFileName: function () {
-            return `syncdb_${this.selectedSource}_${this.timestamp}.log`;
-        }
-    },
-    created: function () {
-        console.log('sync settings');
-        const root = document.querySelector('#vue-sync-settings');
-        this.sources = JSON.parse(root.dataset.sources);
-        this.selectedSource = document.querySelector('#source').value;
-        this.timestamp = root.dataset.timestamp;
-
-        console.log(this.sources);
-        console.log(this.selectedSource);
-   },
-    methods: {
-        sourceChanged: function(event) {
-            console.log(event);
-            const target = event.target;
-            this.selectedSource = target.value;
-        }
-    },
-    el: '#vue-sync-settings'
-});
+new Vue({el: '#vue-sync-settings'});
 {% endjs %}
-
-{% css %}
-    .container {
-        display: flex;
-        flex-direction: row;
-    }
-    .col {
-        flex: 1 1 50%;
-        margin: 10px;
-    }
-    .settings-name {
-        font-weight: bold;
-        padding-right: 10px;
-    }
-    .settings-value {
-        font-family: monospace;
-    }
-{% endcss %}
