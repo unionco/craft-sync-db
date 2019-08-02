@@ -3,16 +3,21 @@
 {% set title = "Sync Database" %}
 
 {% block content %}
-    {% import "_includes/forms" as forms %}
+    {% set cpTrigger = craft.app.config.general.cpTrigger %}
     {% set sources = syncdb.cp.sourceOptions %}
     {% set timestamp = 'now' | date('Y-m-d_H:i:s') %}
-    <form action="/{{ craft.app.config.general.cpTrigger }}/sync-db/sync" data-sync-db method="POST">
+    <form action="/{{ cpTrigger }}/sync-db/sync" data-sync-db method="POST">
         {{ csrfInput() }}
-        {{ redirectInput('/' ~ craft.app.config.general.cpTrigger ~ '/sync-db/') }}
+        {{ redirectInput('/' ~ cpTrigger ~ '/sync-db/') }}
         <div id="vue-sync-settings">
-            <sync-settings sources-json="{{ sources | json_encode }}" timestamp="{{ timestamp }}" storage-path="test"></sync-settings>
+            <sync-settings 
+            sources-json="{{ sources | json_encode }}" 
+            timestamp="{{ timestamp }}" 
+            environments-json="{{ syncdb.syncDb.settings.environments | json_encode }}"
+            storage-path="{{ craft.app.path.getStoragePath }}"
+            ></sync-settings>
         </div>
-     </form>
+    </form>
 {% endblock %}
 
 {% do view.registerAssetBundle("unionco\\craftsyncdb\\assetbundles\\cp\\CpAsset") %}

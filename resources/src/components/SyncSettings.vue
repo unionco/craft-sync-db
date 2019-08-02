@@ -23,7 +23,7 @@
         <div class="heading">
           <label id="logFile-label" for="logFile">Log File</label>
           <div class="instructions">
-            <p>Log files are stored in</p>
+            <p>Log files are stored in {{ storagePath }}</p>
           </div>
         </div>
         <div class="input ltr">
@@ -39,17 +39,18 @@
       </div>
       <button class="btn submit" type="submit">Start</button>
     </div>
-    <div class="col">
+    <!-- <div class="col">
       <div id="source-field" class="field">
         <div class="heading">
           <label>Configuration</label>
         </div>
       </div>
-      <!-- {% for env in syncdb.syncDb.getSettings.environments %} -->
-      <!-- -->
-      <!-- <div v-if="selectedSource == '{{env.environment}}'">{{ syncdb.cp.getEnvironmentSettingsHtml(env)|raw }}</div> -->
-      <!-- {% endfor %} -->
-    </div>
+        <ul>
+            <li v-for="env in environments" v-bind:key="env.name" v-show="selectedSource == env.name">
+                <environment-config :env="env" :cp-trigger="cpTrigger"></environment-config>
+            </li>
+        </ul>
+    </div>-->
   </div>
 </template>
 <script>
@@ -59,31 +60,32 @@ import { Component, Vue } from "vue-property-decorator";
   props: {
     sourcesJson: String,
     timestamp: String,
-    storagePath: String
+    storagePath: String,
+    environmentsJson: String
   }
 })
 export default class SyncSettings extends Vue {
   data() {
     return {
       sources: JSON.parse(this.$props.sourcesJson),
-      selectedSource: JSON.parse(this.$props.sourcesJson)[0].value
+      selectedSource: JSON.parse(this.$props.sourcesJson)[0].value,
+      environments: JSON.parse(this.$props.environmentsJson)
     };
+  }
+  created() {
+    if (window.Craft === undefined) {
+      return;
+    }
+    this.cpUrl = window.Craft.getCpUrl();
   }
 
   get logFileName() {
     return `syncdb_${this.selectedSource}_${this.$props.timestamp}.log`;
   }
 
-  created() {
-    console.log(this.$props.sourcesJson);
-    console.log(this.$props.timestamp);
-  }
-
   sourceChanged(event) {
-    // console.log(event);
     const target = event.target;
     this.selectedSource = target.value;
-    console.log("selectedSource: ", this.selectedSource);
   }
 }
 </script>

@@ -151,6 +151,7 @@ class SyncDbPlugin extends Plugin
                 $event->rules['sync-db/sync/start'] = 'sync-db/sync/init';
                 $event->rules['sync-db/sync/status'] = 'sync-db/sync/status';
                 $event->rules['sync-db/status'] = 'sync-db/sync/status';
+                $event->rules['sync-db/config/save'] = 'sync-db/config/save';
             }
         );
 
