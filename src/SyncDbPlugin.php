@@ -11,22 +11,25 @@
 namespace unionco\craftsyncdb;
 
 use Craft;
-use craft\base\Plugin;
-use craft\console\Application as ConsoleApplication;
-use craft\events\PluginEvent;
-use craft\events\RegisterCpNavItemsEvent;
-use craft\events\RegisterTemplateRootsEvent;
-use craft\events\RegisterUrlRulesEvent;
-use craft\i18n\PhpMessageSource;
-use craft\services\Plugins;
-use craft\web\twig\variables\Cp;
-use craft\web\UrlManager;
 use craft\web\View;
+use yii\base\Event;
+use craft\base\Plugin;
+use craft\web\UrlManager;
+use unionco\syncdb\SyncDb;
+use craft\services\Plugins;
+use craft\events\PluginEvent;
+use craft\i18n\PhpMessageSource;
+use craft\web\twig\variables\Cp;
+use Symfony\Component\Yaml\Yaml;
+use unionco\craftsyncdb\SyncDbPlugin;
+use craft\events\RegisterUrlRulesEvent;
+use unionco\craftsyncdb\models\Settings;
+use craft\events\RegisterCpNavItemsEvent;
 use unionco\craftsyncdb\services\CpService;
+use craft\events\RegisterTemplateRootsEvent;
+use craft\console\Application as ConsoleApplication;
 use unionco\craftsyncdb\services\Sync as SyncService;
 use unionco\craftsyncdb\twigextensions\SyncDbTwigExtension;
-use unionco\syncdb\SyncDb;
-use yii\base\Event;
 
 /**
  * Class Craftsyncdb
@@ -39,20 +42,24 @@ use yii\base\Event;
  */
 class SyncDbPlugin extends Plugin
 {
+    /** Constants */
     const CONSOLE_PREFIX = 'sync-db/sync';
     const DUMP_COMMAND = '/dump';
 
     /** @var SyncDbPlugin */
     public static $plugin;
 
-    /**
-     * @var \unionco\syncdb\SyncDb
-     * @psalm-suppress PropertyNotSetInConstructor
-     **/
+    /** @var string */
+    public static $yamlConfigFile = '';
+
+    /** @var \unionco\syncdb\SyncDb|null **/
     public $syncDb;
 
     /** @var string */
-    public $schemaVersion = '1.0.0';
+    public $schemaVersion = '1.1.0';
+
+    /** @var bool */
+    public $hasCpSettings = true;
 
     /**
      * @param string $id
@@ -98,18 +105,15 @@ class SyncDbPlugin extends Plugin
     {
         parent::init();
         self::$plugin = $this;
+        static::$yamlConfigFile = Craft::$app->getPath()->getConfigPath() . '/syncdb.yaml';
         
-        $this->checkConfigFileExists();
-        
-        /** @psalm-suppress UndefinedClass */
-        if (!$this->syncDb) {
-            $this->syncDb = new SyncDb([
-                'baseDir' => CRAFT_BASE_PATH,
-                'storagePath' => Craft::$app->getPath()->getStoragePath(),
-                'environments' => Craft::$app->getPath()->getConfigPath() . '/syncdb.php',
-                'remoteDumpCommand' => 'craft ' . self::CONSOLE_PREFIX . self::DUMP_COMMAND,
-            ]);
-        }
+        $this->syncDb = new SyncDb([
+            /** @psalm-suppress UndefinedConst */
+            'baseDir' => Craft::$app->getBasePath(),
+            'storagePath' => Craft::$app->getPath()->getStoragePath(),
+            'environments' => $this->getSettings()->getEnvironments(),
+            'remoteDumpCommand' => 'craft ' . self::CONSOLE_PREFIX . self::DUMP_COMMAND,
+        ]);
 
         if (Craft::$app instanceof ConsoleApplication) {
             $this->controllerNamespace = 'unionco\craftsyncdb\console\controllers';
@@ -120,16 +124,6 @@ class SyncDbPlugin extends Plugin
         $this->setComponents([
             'cp' => CpService::class,
         ]);
-
-        Event::on(
-            Plugins::class,
-            Plugins::EVENT_AFTER_INSTALL_PLUGIN,
-            function (PluginEvent $event) {
-                if ($event->plugin === $this) {
-                    $this->checkConfigFileExists();
-                }
-            }
-        );
 
         Event::on(
             Cp::class,
@@ -152,6 +146,7 @@ class SyncDbPlugin extends Plugin
                 $event->rules['sync-db/sync/status'] = 'sync-db/sync/status';
                 $event->rules['sync-db/status'] = 'sync-db/sync/status';
                 $event->rules['sync-db/config/save'] = 'sync-db/config/save';
+                $event->rules['sync-db/yaml'] = 'sync-db/config/yaml';
             }
         );
 
@@ -172,16 +167,22 @@ class SyncDbPlugin extends Plugin
         return self::$plugin;
     }
 
-    public function checkConfigFileExists()
+    protected function createSettingsModel()
     {
-        /** @psalm-suppress UndefinedClass */
-        $configFilePath = Craft::$app->getPath()->getConfigPath() . '/syncdb.php';
-        if (!file_exists($configFilePath)) {
-            $defaultConfigPath = $this->basePath . '/config/default.php';
-            if (!file_exists($defaultConfigPath)) {
-                throw new \Exception("Default configuration not found");
-            }
-            copy($defaultConfigPath, $configFilePath);
-        }
+        $settings = new Settings();
+        $settings->hydrate(static::$yamlConfigFile);
+        return $settings;
+    }
+
+    protected function settingsHtml()
+    {
+        $tableNames = Craft::$app->getDb()->getSchema()->getTableNames();
+        $view = Craft::$app->getView();
+        $options = [
+            'settings' => $this->getSettings(),
+            'tableNames' => $tableNames,
+        ];
+
+        return $view->renderTemplate('sync-db/settings', $options);
     }
 }

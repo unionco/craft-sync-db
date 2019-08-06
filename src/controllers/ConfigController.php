@@ -5,6 +5,7 @@ namespace unionco\craftsyncdb\controllers;
 use Craft;
 use craft\helpers\Json;
 use craft\web\Controller;
+use Symfony\Component\Yaml\Yaml;
 use unionco\craftsyncdb\SyncDbPlugin;
 
 class ConfigController extends Controller
@@ -25,5 +26,12 @@ class ConfigController extends Controller
         return $this->asJson([
             'success' => true
         ]);
+    }
+
+    public function actionYaml()
+    {
+        $config = SyncDbPlugin::getInstance()->settings;
+        // var_dump($config);
+        die;
     }
 }

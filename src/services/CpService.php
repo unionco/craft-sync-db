@@ -7,6 +7,7 @@ use craft\helpers\Json;
 use craft\base\Component;
 use unionco\craftsyncdb\SyncDbPlugin;
 use unionco\syncdb\models\Environment;
+use Symfony\Component\Yaml\Yaml;
 
 class CpService extends Component
 {
@@ -78,5 +79,42 @@ class CpService extends Component
 
         return $output;
     }
-}
 
+    /**
+     * Convert PHP config file (<v0.7.0) to new YAML config file
+     * @return bool
+     */
+    public function convertConfigFile(): bool
+    {
+        $configPath = Craft::$app->getPath()->getConfigPath();
+        $phpConfigFile = $configPath . '/syncdb.php';
+        $yamlConfigFile = $configPath . '/syncdb.yaml';
+
+        $config = null;
+        if (file_exists($phpConfigFile)) {
+            $config = require $phpConfigFile;
+            // 'remotes' -> 'environments'
+            if (key_exists('remotes', $config)) {
+                $config['environments'] = $config['remotes'];
+                unset($config['remotes']);
+            }
+            // 'globals>skipTables' -> 'skipTables'
+            if (key_exists('globals', $config)) {
+                $globals = $config['globals'];
+                if (key_exists('ignoredTables', $globals)) {
+                    $config['skipTables'] = $globals['ignoredTables'];
+                    unset($globals['ignoredTables']);
+                }
+                unset($config['globals']);
+            }
+        } else {
+            $config = [
+                'skipTables' => [],
+                'environments' => [],
+            ];
+        }
+
+        $yaml = Yaml::dump($config, 20, 2);
+        return file_put_contents($yamlConfigFile, $yaml) !== false;
+    }
+}
