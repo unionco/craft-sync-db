@@ -1,6 +1,5 @@
 <template>
   <div>
-    Settings
     <Autocomplete
       :options="dbTables"
       label="Skip Tables"
@@ -9,13 +8,20 @@
       selected-label="Selected"
       @option-selected="addSkipTable"
       @option-removed="removeSkipTable"
+      ref="skipTables"
     ></Autocomplete>
+    <Environments
+      :environments="settings.environments"
+      ref="environments"
+    ></Environments>
+    <button class="button primary" @click="save">Save</button>
   </div>
 </template>
 
 <script>
 import { Component, Vue } from "vue-property-decorator";
 import Autocomplete from "./Autocomplete.vue";
+import Environments from './Environments.vue';
 
 @Component({
   props: {
@@ -23,14 +29,17 @@ import Autocomplete from "./Autocomplete.vue";
     dbTablesJson: String
   },
   components: {
-    Autocomplete
+    Autocomplete,
+    Environments
   }
 })
 export default class CpSettings extends Vue {
-  settings = {};
+  settings = {
+      skipTables: [],
+      environments: {}
+  };
   dbTables = [];
   mounted() {
-    console.log("mounted");
     this.settings = JSON.parse(this.$props.settingsJson);
     this.dbTables = JSON.parse(this.$props.dbTablesJson);
   }
@@ -42,6 +51,16 @@ export default class CpSettings extends Vue {
   removeSkipTable(event) {
       this.settings.skipTables = this.settings.skipTables
       .filter((table) => table != event.target.innerText);
+  }
+
+  save(event) {
+      event.preventDefault();
+      const environmentSettings = this.$refs.environments.getSettings();
+      const settings = {
+          skipTables: this.settings.skipTables,
+          environments: environmentSettings,
+      };
+      console.log(settings);
   }
 }
 </script>

@@ -15,6 +15,9 @@ class Settings extends Model
 
     public function hydrate(string $yamlFilePath): void
     {
+        if (!$yamlFilePath) {
+            return;
+        }
         $data = Yaml::parseFile($yamlFilePath);
         $this->skipTables = $data['skipTables'];
         $this->environments = $data['environments'];

@@ -5515,6 +5515,18 @@ mkdirp@0.5.1, mkdirp@0.5.x, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdi
   dependencies:
     minimist "0.0.8"
 
+mobx-vue@^2.0.9:
+  version "2.0.9"
+  resolved "https://registry.yarnpkg.com/mobx-vue/-/mobx-vue-2.0.9.tgz#656c8c4810f5f31b83eab806c350babb5b862fa1"
+  integrity sha512-7LUusULoEt4+A9/qBaTH/Y/SSYcKFw92lxQk+8mloSi/M/xNhR/Q2fnTEMWzyD/uY4B6VpVfJTejRmDAhcCbHg==
+  dependencies:
+    tslib "^1.9.0"
+
+mobx@^5.13.0:
+  version "5.13.0"
+  resolved "https://registry.yarnpkg.com/mobx/-/mobx-5.13.0.tgz#0fd68f10aa5ff2d146a4ed9e145b53337cfbca59"
+  integrity sha512-eSAntMSMNj0PFL705rgv+aB/z1RjNqDnFEpBe18yQVreXTWiVgIrmBUXzjnJfuba+eo4eAk6zi+/gXQkSUea8A==
+
 move-concurrently@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/move-concurrently/-/move-concurrently-1.0.1.tgz#be2c005fda32e0b29af1f05d7c4b33214c701f92"
