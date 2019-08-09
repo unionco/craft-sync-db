@@ -1,4 +1,5 @@
 <?php
+
 /**
  * craft-sync-db plugin for Craft CMS 3.x
  *
@@ -106,7 +107,11 @@ class SyncDbPlugin extends Plugin
         parent::init();
         self::$plugin = $this;
         static::$yamlConfigFile = Craft::$app->getPath()->getConfigPath() . '/syncdb.yaml';
-        
+
+        $this->setComponents([
+            'cp' => CpService::class,
+        ]);
+
         $this->syncDb = new SyncDb([
             /** @psalm-suppress UndefinedConst */
             'baseDir' => Craft::$app->getBasePath(),
@@ -121,9 +126,6 @@ class SyncDbPlugin extends Plugin
             Craft::$app->getView()->registerTwigExtension(new SyncDbTwigExtension());
         }
 
-        $this->setComponents([
-            'cp' => CpService::class,
-        ]);
 
         Event::on(
             Cp::class,
@@ -169,6 +171,12 @@ class SyncDbPlugin extends Plugin
 
     protected function createSettingsModel()
     {
+        if (!static::$yamlConfigFile) {
+            return;
+        }
+        if (!file_exists(static::$yamlConfigFile)) {
+            $this->cp->convertConfigFile();
+        }
         $settings = new Settings();
         $settings->hydrate(static::$yamlConfigFile);
         return $settings;

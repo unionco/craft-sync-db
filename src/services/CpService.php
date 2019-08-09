@@ -25,7 +25,7 @@ class CpService extends Component
 
     public function init()
     {
-        if (!self::$config) {
+        if (!self::$config && SyncDbPlugin::getInstance()->syncDb) {
             self::$config = SyncDbPlugin::getInstance()->syncDb->getSettings();
         }
     }

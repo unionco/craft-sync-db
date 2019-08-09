@@ -6,30 +6,21 @@
         <p>{{ $props.instructions }}</p>
       </div>
     </div>
-
+    <div class="heading">
+      <label>{{ $props.selectedLabel }}</label>
+      <SelectedItems :items="selected" @item-removed="removeSelected"/>
+    </div>
     <div class="input ltr">
-      <div class="selected">
-        <label>{{ $props.selectedLabel }}</label>
-        <ul>
-          <li
-            v-for="(option, i) in selected"
-            :key="i"
-            @click="removeSelected"
-          >{{ option }}</li>
-        </ul>
-      </div>
       <div class="flex-grow texticon search icon clearable">
         <input
           type="text"
-          class="flex-grow texticon search icon clearable"
+          class="text"
           v-model="search"
+          autocomplete="on"
           @input="onChange"
         />
       </div>
-      <ul
-        v-show="isOpen"
-        class="autocomplete-results"
-      >
+      <ul v-show="isOpen" class="autocomplete-results">
         <li
           v-for="(result, i) in results"
           :key="i"
@@ -42,8 +33,9 @@
 </template>
 
 <script>
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Emit } from "vue-property-decorator";
 import includes from "lodash/includes";
+import SelectedItems from './SelectedItems.vue';
 
 @Component({
   name: "Autocomplete",
@@ -53,6 +45,9 @@ import includes from "lodash/includes";
     label: String,
     instructions: String,
     selectedLabel: String
+  },
+  components: {
+      SelectedItems,
   }
 })
 export default class Autocomplete extends Vue {
@@ -75,12 +70,13 @@ export default class Autocomplete extends Vue {
     this.updateResults();
   }
 
-  removeSelected(event) {
-    this.$emit("option-removed", event);
-    this.availableOptions = [...this.availableOptions, event.target.innerText];
+    @Emit('item-removed')
+  removeSelected(item) {
+    // this.$emit("option-removed", event);
+    this.availableOptions = [...this.availableOptions, item];
     this.updateResults();
   }
-  
+
   updateAvailableOptions() {
     this.availableOptions = this.$props.options.filter(
       option => !this.$props.selected.includes(option)

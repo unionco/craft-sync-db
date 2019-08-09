@@ -3,7 +3,9 @@
 namespace unionco\craftsyncdb\models;
 
 use craft\base\Model;
+use craft\helpers\FileHelper;
 use Symfony\Component\Yaml\Yaml;
+use unionco\craftsyncdb\SyncDbPlugin;
 
 class Settings extends Model
 {
@@ -15,10 +17,7 @@ class Settings extends Model
 
     public function hydrate(string $yamlFilePath): void
     {
-        if (!$yamlFilePath) {
-            return;
-        }
-        $data = Yaml::parseFile($yamlFilePath);
+        $data = Yaml::parse(file_get_contents($yamlFilePath));
         $this->skipTables = $data['skipTables'];
         $this->environments = $data['environments'];
     }

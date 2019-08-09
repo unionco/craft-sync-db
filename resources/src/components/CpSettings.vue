@@ -1,33 +1,29 @@
 <template>
   <div>
     <Autocomplete
-      :options="dbTables"
+      :options="$store.dbTables"
       label="Skip Tables"
       instructions="Tables to skip during sync"
-      :selected="settings.skipTables"
+      :selected="$store.skipTables"
       selected-label="Selected"
-      @option-selected="addSkipTable"
-      @option-removed="removeSkipTable"
+      @item-selected="$store.addSkipTable"
+      @item-removed="$store.removeSkipTable"
       ref="skipTables"
     ></Autocomplete>
-    <Environments
-      :environments="settings.environments"
-      ref="environments"
-    ></Environments>
-    <button class="button primary" @click="save">Save</button>
+    <Environments :environments="$store.environments" ref="environments" />
+    <button class="btn submit" @click="save">Save</button>
   </div>
 </template>
 
 <script>
 import { Component, Vue } from "vue-property-decorator";
 import Autocomplete from "./Autocomplete.vue";
-import Environments from './Environments.vue';
+import Environments from "./Environments.vue";
+import { Observer } from "mobx-vue";
 
+@Observer
 @Component({
-  props: {
-    settingsJson: String,
-    dbTablesJson: String
-  },
+  props: {},
   components: {
     Autocomplete,
     Environments
@@ -35,32 +31,31 @@ import Environments from './Environments.vue';
 })
 export default class CpSettings extends Vue {
   settings = {
-      skipTables: [],
-      environments: {}
+    skipTables: [],
+    environments: {}
   };
   dbTables = [];
   mounted() {
-    this.settings = JSON.parse(this.$props.settingsJson);
-    this.dbTables = JSON.parse(this.$props.dbTablesJson);
-  }
+    const vueRoot = document.querySelector("[data-vue]");
+    const settingsJson = vueRoot.dataset.settingsJson;
+    const settings = JSON.parse(settingsJson);
 
-  addSkipTable(event) {
-      this.settings.skipTables = [...this.settings.skipTables, event.target.innerText];
-  }
+    const dbTablesJson = vueRoot.dataset.dbTablesJson;
+    const dbTables = JSON.parse(dbTablesJson);
 
-  removeSkipTable(event) {
-      this.settings.skipTables = this.settings.skipTables
-      .filter((table) => table != event.target.innerText);
+    this.$store.setEnvironments(settings.environments);
+    this.$store.setDbTables(dbTables);
+    this.$store.setSkipTables(settings.skipTables);
   }
 
   save(event) {
-      event.preventDefault();
-      const environmentSettings = this.$refs.environments.getSettings();
-      const settings = {
-          skipTables: this.settings.skipTables,
-          environments: environmentSettings,
-      };
-      console.log(settings);
+    event.preventDefault();
+    const environmentSettings = this.$refs.environments.getSettings();
+    const settings = {
+      skipTables: this.settings.skipTables,
+      environments: environmentSettings
+    };
+    console.log(settings);
   }
 }
 </script>
