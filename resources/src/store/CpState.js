@@ -30,13 +30,19 @@ export default class CpState {
       ...this.environments,
       {
         name: 'new',
-        pgDumpPath: '/usr/bin/pg_dump',
-        mysqlDumpPath: '/usr/bin/mysqldump',
+        username: '',
+        host: '',
+        root: '',
+        backupDirectory: '',
+        port: '22',
+        dbDumpClientPath: '/usr/bin/pg_dump',
         phpPath: '/usr/bin/php',
+        verbosity: 64,
+        environment: 'production',
         uid,
       },
     ];
-    this.toggleEnvironmentAccordion(uid);
+    // this.toggleEnvironmentAccordion(uid);
   }
 
   @action.bound removeEnvironment(uid) {

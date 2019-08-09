@@ -26,4 +26,9 @@ class Settings extends Model
     {
         return $this->environments;
     }
+
+    public function setAttributes($values, $safeOnly = true)
+    {
+        $settings = [];
+    }
 }

@@ -11,7 +11,6 @@
       ref="skipTables"
     ></Autocomplete>
     <Environments :environments="$store.environments" ref="environments" />
-    <button class="btn submit" @click="save">Save</button>
   </div>
 </template>
 
@@ -20,7 +19,7 @@ import { Component, Vue } from "vue-property-decorator";
 import Autocomplete from "./Autocomplete.vue";
 import Environments from "./Environments.vue";
 import { Observer } from "mobx-vue";
-import { toJS } from 'mobx';
+import { toJS } from "mobx";
 
 @Observer
 @Component({
@@ -47,6 +46,14 @@ export default class CpSettings extends Vue {
     this.$store.setEnvironments(settings.environments);
     this.$store.setDbTables(dbTables);
     this.$store.setSkipTables(settings.skipTables);
+
+    // Override the default Craft CP Save button
+    document.querySelectorAll(".btn.submit").forEach(btn => {
+      btn.addEventListener('click', e => {
+          e.preventDefault();
+        this.save(e);
+      });
+    });
   }
 
   save(event) {
@@ -54,28 +61,19 @@ export default class CpSettings extends Vue {
 
     const settings = {
       skipTables: toJS(this.$store.skipTables),
-      environments: toJS(this.$store.environments),
+      environments: toJS(this.$store.environments)
     };
-    // console.log(settings);
     const data = {
-        pluginHandle: 'sync-db',
-        // redirect: '/admin/settings',
-        settings
+      pluginHandle: "sync-db",
+      settings
     };
-    console.log(data);
     const callback = (arg1, textStatus, jqXhr) => {
-        if (jqXhr.status === 200) {
-            window.Craft.cp.displayNotice('Settings saved');
-            setTimeout(() => window.Craft.redirectTo('/admin/settings'), 1000);
-        } else if (textStatus === 'error' && jqXhr.status === 302) {
-            // debugger;
-            // window.Craft.redirectTo(jqXhr.getResponseHeader('x-redirect'));
-            window.Craft.redirectTo('/admin/settings');
-        }
-        window.resp = jqXhr;
-        console.log(jqXhr);
+      if (jqXhr.status === 200) {
+        window.Craft.cp.displayNotice("Settings saved");
+        setTimeout(() => window.Craft.redirectTo("/admin/settings"), 1000);
+      }
     };
-    window.Craft.postActionRequest('sync-db/config/save', data, callback);
+    window.Craft.postActionRequest("sync-db/config/save", data, callback);
   }
 }
 </script>

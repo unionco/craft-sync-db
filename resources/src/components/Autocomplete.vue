@@ -1,27 +1,53 @@
 <template>
-  <div class="field">
-    <div class="heading">
-      <label>{{ $props.label }}</label>
-      <div class="instructions">
-        <p>{{ $props.instructions }}</p>
+  <div class="Autocomplete">
+    <div class="field">
+      <div class="heading">
+        <label>{{ $props.label }}</label>
+        <div class="instructions">
+          <p>{{ $props.instructions }}</p>
+        </div>
       </div>
-    </div>
-    <div class="heading">
-      <label>{{ $props.selectedLabel }}</label>
-      <SelectedItems :items="selected" @item-removed="removeSelected" />
-    </div>
-    <div class="input ltr">
-      <div class="flex-grow texticon search icon clearable">
-        <input type="text" class="text" v-model="search" autocomplete="on" @input="onChange" />
+      <div class="row">
+        <div class="column search">
+          <div class="input ltr">
+            <div class="autosuggest-container">
+              <div class="flex-grow texticon search icon clearable">
+                <input
+                  type="text"
+                  class="text"
+                  v-model="search"
+                  autocomplete="on"
+                  @input="onChange"
+                  @blur="onBlur"
+                />
+              </div>
+              <div
+                v-show="isOpen"
+                class="autosuggest__results-container"
+              >
+                <div class="autosuggest__results">
+                  <ul class="autosuggest-results" role="listbox">
+                    <li
+                      v-for="(result, i) in results"
+                      :key="i"
+                      class="autosuggest__results_item"
+                      role="option"
+                      @click="() => setSelected(result)"
+                    >{{ result }}</li>
+                    <li v-if="noResults" class="autosuggest__results_item" role="option">No results</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="column results">
+          <div class="heading">
+            <label class="selected-label">{{ $props.selectedLabel }}</label>
+            <SelectedItems :items="selected" @item-removed="removeSelected" />
+          </div>
+        </div>
       </div>
-      <ul v-show="isOpen" class="autocomplete-results">
-        <li
-          v-for="(result, i) in results"
-          :key="i"
-          class="autocomplete-result"
-          @click="() => setSelected(result)"
-        >{{ result }}</li>
-      </ul>
     </div>
   </div>
 </template>
@@ -38,7 +64,7 @@ import SelectedItems from "./SelectedItems.vue";
     selected: Array,
     label: String,
     instructions: String,
-    selectedLabel: String,
+    selectedLabel: String
   },
   components: {
     SelectedItems
@@ -48,12 +74,17 @@ export default class Autocomplete extends Vue {
   search = "";
   availableOptions = [];
   results = [];
+  noResults = false;
   isOpen = false;
 
   onChange() {
     this.isOpen = true;
     this.updateAvailableOptions();
     this.updateResults();
+  }
+
+  onBlur() {
+      this.isOpen = false;
   }
 
   @Emit("item-selected")
@@ -82,33 +113,49 @@ export default class Autocomplete extends Vue {
     this.results = this.availableOptions.filter(
       option => option.toLowerCase().indexOf(this.search.toLowerCase()) > -1
     );
+    this.noResults = this.results.length < 1;
   }
 }
 </script>
 
-<style>
-.autocomplete {
-  position: relative;
-  width: 130px;
-}
+<style lang="scss">
+.Autocomplete {
+  .row {
+    display: flex;
+    flex-direction: row;
+  }
 
-.autocomplete-results {
-  padding: 0;
-  margin: 0;
-  border: 1px solid #eeeeee;
-  height: 120px;
-  overflow: auto;
-}
+  .column {
+    flex: 1 1 50%;
+  }
 
-.autocomplete-result {
-  list-style: none;
-  text-align: left;
-  padding: 4px 2px;
-  cursor: pointer;
+  .selected-label {
+      font-weight: bold;
+      color: #b9bfc6;
+  }
 }
+// .autocomplete {
+//   position: relative;
+//   width: 130px;
+// }
 
-.autocomplete-result:hover {
-  background-color: #4aae9b;
-  color: white;
-}
+// .autocomplete-results {
+//   padding: 0;
+//   margin: 0;
+//   border: 1px solid #eeeeee;
+//   height: 120px;
+//   overflow: auto;
+// }
+
+// .autocomplete-result {
+//   list-style: none;
+//   text-align: left;
+//   padding: 4px 2px;
+//   cursor: pointer;
+// }
+
+// .autocomplete-result:hover {
+//   background-color: #4aae9b;
+//   color: white;
+// }
 </style>

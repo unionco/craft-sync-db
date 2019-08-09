@@ -20,20 +20,25 @@
               :items="verbosityItems"
               v-model="environment.verbosity"
             />
+            <CraftTextField label="SSH Username" v-model="environment.username" />
             <CraftTextField label="SSH Host" v-model="environment.host" />
             <CraftTextField label="SSH Port" v-model="environment.port" />
-            <CraftTextField label="SSH Username" v-model="environment.username" />
+
             <CraftTextField label="PHP Path" v-model="environment.phpPath" />
-            <CraftLightswitch label="Use MySQL" v-model="environment.mysqlDefault" />
             <CraftTextField
-              v-if="environment.mysqlDefault"
-              label="mysqldump Path"
-              :default-value="environment.mysqlDumpPath"
+              label="Database Dump Client Path"
+              v-model="environment.dbDumpClientPath"
+              instructions="Path to pg_dump or mysqldump executable"
             />
             <CraftTextField
-              v-if="!environment.mysqlDefault"
-              label="pg_dump Path"
-              :default-value="environment.pgDumpPath"
+              label="Project Root"
+              v-model="environment.root"
+              instructions="Absolute path to the project root directory"
+            />
+            <CraftTextField
+              label="Backup Directory"
+              v-model="environment.backupDirectory"
+              instructions="Absolute path where temporary files should be stored"
             />
           </div>
         </div>
@@ -65,31 +70,19 @@ import { Observer } from "mobx-vue";
 export default class Environment extends Vue {
   data() {
     return {
-      environment: this.$store.environments.find(env => env.uid === this.$props.uid),
+      environment: this.$store.environments.find(
+        env => env.uid === this.$props.uid
+      )
     };
   }
-  
-//   @Emit('toggle-environment')
+
   toggleEnvironment() {
-      this.$store.toggleEnvironmentAccordion(this.$props.uid);
-    //   this.$props.uid;
+    this.$store.toggleEnvironmentAccordion(this.$props.uid);
   }
 
-//   @Emit('remove-environment')
   removeEnvironment() {
-      this.$store.removeEnvironment(this.$props.uid);
-    //   return this.$props.uid;
+    this.$store.removeEnvironment(this.$props.uid);
   }
-//   removeEnvironment(e) {
-//     e.preventDefault();
-//     console.log(i);
-//     this.$store.removeEnvironment(i);
-//   }
-
-//   toggleEnvironment(e, i) {
-//     e.preventDefault();
-//     this.$store.toggleEnvironmentAccordion(i);
-//   }
 
   get environmentItems() {
     return [
@@ -112,6 +105,6 @@ export default class Environment extends Vue {
 </script>
 <style>
 .matrixblock.collapsed {
-    height: 16px;
+  height: 16px;
 }
 </style>

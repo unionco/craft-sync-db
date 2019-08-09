@@ -1,7 +1,10 @@
 <template>
 <div class="field">
-    <div v-if="$props.label" class="heading">
-        <label v-html="$props.label"/>
+    <div v-if="$props.label || $props.instructions" class="heading">
+        <label v-if="$props.label" v-html="$props.label"/>
+        <div class="instructions" v-if="$props.instructions">
+            <p>{{ $props.instructions }}</p>
+        </div>
     </div>
     <div class="input ltr">
         <input type="text" class="text fullwidth" v-model="input">
@@ -16,6 +19,7 @@ import { Component, Vue, Watch, Emit } from 'vue-property-decorator';
     props: {
         label: String,
         value: [String, Number,],
+        instructions: String
     }
 })
 export default class CraftTextField extends Vue {
