@@ -18,13 +18,10 @@
 <script>
 import { Component, Vue } from "vue-property-decorator";
 
-@Component({
-  props: {
-    env: String,
-    logFile: String
-  }
-})
+@Component
 export default class SyncOutput extends Vue {
+    logFile = '';
+    env = '';
   statusText = "Initializing";
   showSpinner = false;
   logOutput = "";
@@ -42,13 +39,16 @@ export default class SyncOutput extends Vue {
 
   mounted() {
     console.log("mounted");
+    const vueRoot = document.querySelector("[data-vue]");
+    this.env = vueRoot.dataset.env;
+    this.logFile = vueRoot.dataset.logFile;
     this.makeRequest(true);
   }
 
   makeRequest(initial = true) {
     const data = {
-      env: this.$props.env,
-      logFile: this.$props.logFile
+      env: this.env,
+      logFile: this.logFile
     };
     if (initial) {
       this.showSpinner = true;

@@ -14,12 +14,8 @@ import CpState from './store/CpState';
 
 if (typeof window !== 'undefined' && window.Vue) {
     window.Vue.prototype.$store = new CpState();
-    // window.Vue.use(VueSimpleMapPlugin);
     const vueRoot = document.querySelector('[data-app]');
-    // debugger;
-    console.log('Vue is defined');
     if (vueRoot) {
-        console.log('vueRoot exists');
         new window.Vue({
             render: h => h(App),
         }).$mount(vueRoot);

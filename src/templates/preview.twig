@@ -4,23 +4,18 @@
 
 {% block content %}
     {% set cpTrigger = craft.app.config.general.cpTrigger %}
-    {% set sources = syncdb.cp.sourceOptions %}
+    {% set settings = syncdb.getSettings %}
     {% set timestamp = 'now' | date('Y-m-d_H:i:s') %}
     <form action="/{{ cpTrigger }}/sync-db/sync" data-sync-db method="POST">
         {{ csrfInput() }}
         {{ redirectInput('/' ~ cpTrigger ~ '/sync-db/') }}
-        <div id="vue-sync-settings">
-            <sync-settings 
-            sources-json="{{ sources | json_encode }}" 
-            timestamp="{{ timestamp }}" 
-            environments-json="{{ syncdb.syncDb.settings.environments | json_encode }}"
-            storage-path="{{ craft.app.path.getStoragePath }}"
-            ></sync-settings>
+        <div data-vue="preview" data-settings-json="{{ settings|json_encode }}"
+            data-timestamp="{{ timestamp }}" 
+            data-environments-json="{{ syncdb.syncDb.settings.environments | json_encode }}"
+            data-storage-path="{{ craft.app.path.getStoragePath }}">
+            <div data-app></div>
         </div>
     </form>
 {% endblock %}
 
 {% do view.registerAssetBundle("unionco\\craftsyncdb\\assetbundles\\cp\\CpAsset") %}
-{% js %}
-new Vue({el: '#vue-sync-settings'});
-{% endjs %}

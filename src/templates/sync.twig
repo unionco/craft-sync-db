@@ -3,13 +3,9 @@
 {% set title = "Sync Database" %}
 
 {% block content %}
-    <div id="vue-sync-output">
-        <sync-output env="{{ craft.app.request.getBodyParam('env') }}" log-file="{{ craft.app.request.getBodyParam('logFile') }}"></sync-output>
+    <div data-vue="sync" data-env="{{ craft.app.request.getBodyParam('env') }}" data-log-file="{{ craft.app.request.getBodyParam('logFile') }}">
+        <div data-app></div>
     </div>
 {% endblock %}
 
 {% do view.registerAssetBundle("unionco\\craftsyncdb\\assetbundles\\cp\\CpAsset") %}
-
-{% js %}
-new Vue({el: '#vue-sync-output'});
-{% endjs %}

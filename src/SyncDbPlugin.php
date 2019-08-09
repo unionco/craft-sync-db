@@ -132,7 +132,7 @@ class SyncDbPlugin extends Plugin
             Cp::EVENT_REGISTER_CP_NAV_ITEMS,
             function (RegisterCpNavItemsEvent $event) {
                 $event->navItems[] = [
-                    'url' => 'sync-db',
+                    'url' => 'sync-db/preview',
                     'label' => 'Sync Database',
                     'icon' => '@plugins/sync-db/icon-mask.svg',
                 ];

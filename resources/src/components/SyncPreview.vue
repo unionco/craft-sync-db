@@ -10,10 +10,10 @@
           <div class="select">
             <select id="source" name="env" @change="sourceChanged" v-model="selectedSource">
               <option
-                v-for="option in sources"
-                v-bind:key="option.value"
-                v-bind:value="option.value"
-              >{{ option.label }}</option>
+                v-for="environment in $store.environments"
+                v-bind:key="environment.name"
+                v-bind:value="environment.uid"
+              >{{ environment.name }} [{{ environment.environment }}]</option>
             </select>
           </div>
         </div>
@@ -39,39 +39,19 @@
       </div>
       <button class="btn submit" type="submit">Start</button>
     </div>
-    <!-- <div class="col">
-      <div id="source-field" class="field">
-        <div class="heading">
-          <label>Configuration</label>
-        </div>
-      </div>
-        <ul>
-            <li v-for="env in environments" v-bind:key="env.name" v-show="selectedSource == env.name">
-                <environment-config :env="env" :cp-trigger="cpTrigger"></environment-config>
-            </li>
-        </ul>
-    </div>-->
   </div>
 </template>
 <script>
 import { Component, Vue } from "vue-property-decorator";
+import { Observer } from "mobx-vue";
 
-@Component({
-  props: {
-    sourcesJson: String,
-    timestamp: String,
-    storagePath: String,
-    environmentsJson: String
-  }
-})
-export default class SyncSettings extends Vue {
-  data() {
-    return {
-      sources: JSON.parse(this.$props.sourcesJson),
-      selectedSource: JSON.parse(this.$props.sourcesJson)[0].value,
-      environments: JSON.parse(this.$props.environmentsJson)
-    };
-  }
+@Observer
+@Component({})
+export default class SyncPreview extends Vue {
+  timestamp = "";
+  cpUrl = "";
+  selectedSource = "";
+  storagePath = "";
   created() {
     if (window.Craft === undefined) {
       return;
@@ -80,12 +60,30 @@ export default class SyncSettings extends Vue {
   }
 
   get logFileName() {
-    return `syncdb_${this.selectedSource}_${this.$props.timestamp}.log`;
+    let environment = this.$store.environments.find(
+      env => env.uid === this.selectedSource
+    );
+    if (!environment) {
+      environment = "";
+    }
+    return `syncdb_${environment.name}_${this.timestamp}.log`;
   }
 
   sourceChanged(event) {
     const target = event.target;
     this.selectedSource = target.value;
+  }
+
+  mounted() {
+    const vueRoot = document.querySelector("[data-vue]");
+    const settingsJson = vueRoot.dataset.settingsJson;
+    const settings = JSON.parse(settingsJson);
+    this.timestamp = vueRoot.dataset.timestamp;
+    this.$store.setEnvironments(settings.environments);
+    if (settings.environments.length) {
+      this.selectedSource = settings.environments[0].uid;
+    }
+    this.storagePath = vueRoot.dataset.storagePath;
   }
 }
 </script>
