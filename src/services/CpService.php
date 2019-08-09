@@ -12,7 +12,7 @@ use Symfony\Component\Yaml\Yaml;
 class CpService extends Component
 {
     public static $config;
-    
+
     const ENV_PRODUCTION = 'production';
     const ENV_STAGING = 'staging';
     const ENV_DEV = 'dev';
@@ -116,5 +116,13 @@ class CpService extends Component
 
         $yaml = Yaml::dump($config, 20, 2);
         return file_put_contents($yamlConfigFile, $yaml) !== false;
+    }
+
+    public function writeSettings(array $settings)
+    {
+        $yaml = Yaml::dump($settings, 20, 2);
+        if ($yaml != file_get_contents(SyncDbPlugin::$yamlConfigFile)) {
+            file_put_contents(SyncDbPlugin::$yamlConfigFile, $yaml);
+        }
     }
 }

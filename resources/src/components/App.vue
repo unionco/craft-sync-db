@@ -1,6 +1,5 @@
 <template>
     <div>
-        {{ page }}
         <CpSettings v-if="page === 'settings'"/>
     </div>
 </template>

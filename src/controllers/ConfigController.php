@@ -10,19 +10,12 @@ use unionco\craftsyncdb\SyncDbPlugin;
 
 class ConfigController extends Controller
 {
-    protected $allowAnonymous = true;
+    // protected $allowAnonymous = true;
 
     public function actionSave()
     {
-        $newConfig = Json::decode(Craft::$app->getRequest()->getBodyParam('config'), true);
-        $environments = SyncDbPlugin::getInstance()->syncDb->getSettings()->environments;
-        if (!key_exists($newConfig['name'], $environments)) {
-            return $this->asJson([
-                'success' => false,
-                'message' => 'Unknown environment: ' . $newConfig['name'],
-            ]);
-        }
-        
+        $newConfig = Craft::$app->getRequest()->getBodyParam('settings');
+        SyncDbPlugin::getInstance()->cp->writeSettings($newConfig);
         return $this->asJson([
             'success' => true
         ]);

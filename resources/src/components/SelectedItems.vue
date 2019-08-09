@@ -23,8 +23,9 @@ import { Component, Vue, Emit } from "vue-property-decorator";
 })
 export default class SelectedItems extends Vue {
     @Emit('item-removed')
-    removeSelected(index) {
-        console.log(index);
+    removeSelected(removedItem) {
+        console.log(removedItem);
+        return removedItem;
     }
 }
 </script>

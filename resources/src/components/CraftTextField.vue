@@ -4,7 +4,7 @@
         <label v-html="$props.label"/>
     </div>
     <div class="input ltr">
-        <input type="text" class="text" v-model="input">
+        <input type="text" class="text fullwidth" v-model="input">
     </div>
 </div>
 </template>

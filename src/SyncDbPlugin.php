@@ -162,6 +162,7 @@ class SyncDbPlugin extends Plugin
             ),
             __METHOD__
         );
+        // parent::init();
     }
 
     public static function getInstance(): SyncDbPlugin
@@ -192,5 +193,11 @@ class SyncDbPlugin extends Plugin
         ];
 
         return $view->renderTemplate('sync-db/settings', $options);
+    }
+
+    public function setSettings(array $settings)
+    {
+        // $this->cp->writeSettings($settings);
+        return;
     }
 }

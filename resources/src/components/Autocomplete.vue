@@ -8,24 +8,18 @@
     </div>
     <div class="heading">
       <label>{{ $props.selectedLabel }}</label>
-      <SelectedItems :items="selected" @item-removed="removeSelected"/>
+      <SelectedItems :items="selected" @item-removed="removeSelected" />
     </div>
     <div class="input ltr">
       <div class="flex-grow texticon search icon clearable">
-        <input
-          type="text"
-          class="text"
-          v-model="search"
-          autocomplete="on"
-          @input="onChange"
-        />
+        <input type="text" class="text" v-model="search" autocomplete="on" @input="onChange" />
       </div>
       <ul v-show="isOpen" class="autocomplete-results">
         <li
           v-for="(result, i) in results"
           :key="i"
           class="autocomplete-result"
-          @click="setSelected"
+          @click="() => setSelected(result)"
         >{{ result }}</li>
       </ul>
     </div>
@@ -35,7 +29,7 @@
 <script>
 import { Component, Vue, Emit } from "vue-property-decorator";
 import includes from "lodash/includes";
-import SelectedItems from './SelectedItems.vue';
+import SelectedItems from "./SelectedItems.vue";
 
 @Component({
   name: "Autocomplete",
@@ -44,10 +38,10 @@ import SelectedItems from './SelectedItems.vue';
     selected: Array,
     label: String,
     instructions: String,
-    selectedLabel: String
+    selectedLabel: String,
   },
   components: {
-      SelectedItems,
+    SelectedItems
   }
 })
 export default class Autocomplete extends Vue {
@@ -62,19 +56,20 @@ export default class Autocomplete extends Vue {
     this.updateResults();
   }
 
-  setSelected(event) {
-    this.$emit("option-selected", event);
+  @Emit("item-selected")
+  setSelected(selectedItem) {
     this.availableOptions = this.availableOptions.filter(
-      option => option != event.target.innerText
+      option => option != selectedItem
     );
     this.updateResults();
+    return selectedItem;
   }
 
-    @Emit('item-removed')
-  removeSelected(item) {
-    // this.$emit("option-removed", event);
-    this.availableOptions = [...this.availableOptions, item];
+  @Emit("item-removed")
+  removeSelected(removedItem) {
+    this.availableOptions = [...this.availableOptions, removedItem];
     this.updateResults();
+    return removedItem;
   }
 
   updateAvailableOptions() {
