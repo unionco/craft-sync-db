@@ -21,10 +21,7 @@
                   @blur="onBlur"
                 />
               </div>
-              <div
-                v-show="isOpen"
-                class="autosuggest__results-container"
-              >
+              <div v-show="isOpen" class="autosuggest__results-container">
                 <div class="autosuggest__results">
                   <ul class="autosuggest-results" role="listbox">
                     <li
@@ -83,12 +80,17 @@ export default class Autocomplete extends Vue {
     this.updateResults();
   }
 
-  onBlur() {
-      this.isOpen = false;
+  onBlur(e) {
+    if (e.explicitOriginalTarget.getAttribute("role") === "option") {
+      console.log("return");
+      return;
+    }
+    this.isOpen = false;
   }
 
   @Emit("item-selected")
   setSelected(selectedItem) {
+    console.log("item selected");
     this.availableOptions = this.availableOptions.filter(
       option => option != selectedItem
     );
@@ -130,8 +132,8 @@ export default class Autocomplete extends Vue {
   }
 
   .selected-label {
-      font-weight: bold;
-      color: #b9bfc6;
+    font-weight: bold;
+    color: #b9bfc6;
   }
 }
 // .autocomplete {
