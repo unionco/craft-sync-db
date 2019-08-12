@@ -21,4 +21,3 @@ if (typeof window !== 'undefined' && window.Vue) {
         }).$mount(vueRoot);
     }
 }
-

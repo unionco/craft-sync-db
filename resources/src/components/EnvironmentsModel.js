@@ -29,6 +29,6 @@ export default class EnvironmentsModel {
     }
 
     @action.bound removeEnvironment(index) {
-        this.environments = [...this.environments.splice(0, index), ...this.environments.splice(index+1, 1)];
+        this.environments = [...this.environments.splice(0, index), ...this.environments.splice(index + 1, 1)];
     }
-};
+}
