@@ -114,7 +114,7 @@ class SyncDbPlugin extends Plugin
 
         $this->syncDb = new SyncDb([
             /** @psalm-suppress UndefinedConst */
-            'baseDir' => Craft::$app->getBasePath(),
+            'baseDir' => CRAFT_BASE_PATH,
             'storagePath' => Craft::$app->getPath()->getStoragePath(),
             'environments' => $this->getSettings()->getEnvironments(),
             'remoteDumpCommand' => 'craft ' . self::CONSOLE_PREFIX . self::DUMP_COMMAND,

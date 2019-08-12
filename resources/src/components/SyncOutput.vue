@@ -34,10 +34,10 @@ export default class SyncOutput extends Vue {
       return;
     }
     this.cpUrl = window.Craft.getCpUrl();
-    this.redirectUrl = `${this.cpUrl}/sync-db`;
+    this.redirectUrl = `${this.cpUrl}/sync-db/preview`;
   }
 
-  mounted() {
+mounted() {
     console.log("mounted");
     const vueRoot = document.querySelector("[data-vue]");
     this.env = vueRoot.dataset.env;
@@ -72,13 +72,13 @@ export default class SyncOutput extends Vue {
   setLogOutput(text) {
       let formatted = '';
       text.split(/\n/).forEach((line) => {
-          if (line.indexOf('NOTICE') !== false) {
+          if (line.indexOf('NOTICE') !== -1) {
               formatted += '<span class="log-notice">' + line + '</span><br/>';
-          } else if (line.indexOf('INFO') !== false) {
+          } else if (line.indexOf('INFO') !== -1) {
               formatted += '<span class="log-info">' + line + '</span><br/>';
-          } else if (line.indexOf('DEBUG') !== false) {
+          } else if (line.indexOf('DEBUG') !== -1) {
               formatted += '<span class="log-debug">' + line + '</span><br/>';
-          } else if (line.indexOf('ERROR') !== false)  {
+          } else if (line.indexOf('ERROR') !== -1)  {
               formatted += '<span class="log-error">' + line + '</span><br/>';
           }
         //   formatted += 
@@ -105,6 +105,8 @@ export default class SyncOutput extends Vue {
 pre {
     background-color: #27303a;
     padding: 20px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 code {
     background-color: #27303a;

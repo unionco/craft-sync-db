@@ -12,7 +12,7 @@
               <option
                 v-for="environment in $store.environments"
                 v-bind:key="environment.name"
-                v-bind:value="environment.uid"
+                v-bind:value="environment.name"
               >{{ environment.name }} [{{ environment.environment }}]</option>
             </select>
           </div>
@@ -60,13 +60,7 @@ export default class SyncPreview extends Vue {
   }
 
   get logFileName() {
-    let environment = this.$store.environments.find(
-      env => env.uid === this.selectedSource
-    );
-    if (!environment) {
-      environment = "";
-    }
-    return `syncdb_${environment.name}_${this.timestamp}.log`;
+    return `syncdb_${this.selectedSource}_${this.timestamp}.log`;
   }
 
   sourceChanged(event) {
@@ -81,7 +75,7 @@ export default class SyncPreview extends Vue {
     this.timestamp = vueRoot.dataset.timestamp;
     this.$store.setEnvironments(settings.environments);
     if (settings.environments.length) {
-      this.selectedSource = settings.environments[0].uid;
+      this.selectedSource = settings.environments[0].name;
     }
     this.storagePath = vueRoot.dataset.storagePath;
   }
