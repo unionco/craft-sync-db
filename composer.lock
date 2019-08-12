@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dc47fc3af16d0c108c8d3390ebfda84f",
+    "content-hash": "425deb42ae5e858ec7b1d603e854ac1f",
     "packages": [
         {
             "name": "cebe/markdown",
@@ -2501,11 +2501,17 @@
         },
         {
             "name": "unionco/syncdb",
-            "version": "dev-master",
+            "version": "v0.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/unionco/syncdb.git",
+                "reference": "ef9c151e35d768d99754e180ee98aa4997c445f4"
+            },
             "dist": {
-                "type": "path",
-                "url": "../syncdb",
-                "reference": "29a7c52d7ada643692ac76dd161cedb4f9fa4fe5"
+                "type": "zip",
+                "url": "https://api.github.com/repos/unionco/syncdb/zipball/ef9c151e35d768d99754e180ee98aa4997c445f4",
+                "reference": "ef9c151e35d768d99754e180ee98aa4997c445f4",
+                "shasum": ""
             },
             "require": {
                 "symfony/console": "^4.2||^3.0",
@@ -2520,6 +2526,7 @@
                     "unionco\\syncdb\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2529,7 +2536,8 @@
                     "email": "unionco@gmail.com"
                 }
             ],
-            "description": "Library to assist with syncing databases across different environments"
+            "description": "Library to assist with syncing databases across different environments",
+            "time": "2019-08-12T12:37:14+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -4077,8 +4085,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "craftcms/cms": 5,
-        "unionco/syncdb": 20
+        "craftcms/cms": 5
     },
     "prefer-stable": false,
     "prefer-lowest": false,

@@ -95,7 +95,10 @@ class CpService extends Component
             $config = require $phpConfigFile;
             // 'remotes' -> 'environments'
             if (key_exists('remotes', $config)) {
-                $config['environments'] = $config['remotes'];
+                $config['environments'] = [];
+                foreach ($config['remotes'] as $remote) {
+                    $config['environments'][] = $remote;
+                }
                 unset($config['remotes']);
             }
             // 'globals>skipTables' -> 'skipTables'
