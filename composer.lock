@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "425deb42ae5e858ec7b1d603e854ac1f",
+    "content-hash": "dabc87d67532c5782135500c31a16e50",
     "packages": [
         {
             "name": "cebe/markdown",
@@ -2501,16 +2501,16 @@
         },
         {
             "name": "unionco/syncdb",
-            "version": "v0.7.0",
+            "version": "v0.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/unionco/syncdb.git",
-                "reference": "ef9c151e35d768d99754e180ee98aa4997c445f4"
+                "reference": "e55d700e469d6ff993331e2cef88b91527e13f9f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/unionco/syncdb/zipball/ef9c151e35d768d99754e180ee98aa4997c445f4",
-                "reference": "ef9c151e35d768d99754e180ee98aa4997c445f4",
+                "url": "https://api.github.com/repos/unionco/syncdb/zipball/e55d700e469d6ff993331e2cef88b91527e13f9f",
+                "reference": "e55d700e469d6ff993331e2cef88b91527e13f9f",
                 "shasum": ""
             },
             "require": {
@@ -2537,7 +2537,7 @@
                 }
             ],
             "description": "Library to assist with syncing databases across different environments",
-            "time": "2019-08-12T12:37:14+00:00"
+            "time": "2019-08-26T13:11:08+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
