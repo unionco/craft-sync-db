@@ -118,7 +118,11 @@ class CpService extends Component
         }
 
         $yaml = Yaml::dump($config, 20, 2);
-        return file_put_contents($yamlConfigFile, $yaml) !== false;
+        try {
+            return file_put_contents($yamlConfigFile, $yaml) !== false;
+        } catch (\Throwable $e) {
+            return false;
+        }
     }
 
     public function writeSettings(array $settings)

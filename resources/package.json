@@ -10,6 +10,7 @@
   "dependencies": {
     "@vue/web-component-wrapper": "^1.2.0",
     "autosize": "^4.0.2",
+    "eslint-utils": "^1.4.1",
     "lodash.get": "^4.4.2",
     "mobx": "^5.13.0",
     "mobx-vue": "^2.0.9",

@@ -21,6 +21,7 @@ class m190805_192551_yaml_config_file extends Migration
             echo "Configuration file converted successfully. New file: config/syncdb.yaml\n";
             echo "You can remove the old PHP-based configuration file (config/syncdb.php\n";
         }
+        return true;
     }
 
     /**
