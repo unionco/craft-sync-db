@@ -1,51 +1,53 @@
 {
-    "name": "unionco/craft-sync-db",
-    "description": "Craft 3 plugin to sync database across environments",
-    "type": "craft-plugin",
-    "keywords": [
-        "craft",
-        "cms",
-        "craftcms",
-        "craft-plugin",
-        "craft-sync-db"
-    ],
-    "support": {
-        "docs": "https://github.com/unionco/craft-sync-db",
-        "issues": "https://github.com/unionco/craft-sync-db"
+  "name": "unionco/craft-sync-db",
+  "description": "Craft 3 plugin to sync database across environments",
+  "type": "craft-plugin",
+  "keywords": [
+    "craft",
+    "cms",
+    "craftcms",
+    "craft-plugin",
+    "craft-sync-db"
+  ],
+  "support": {
+    "docs": "https://github.com/unionco/craft-sync-db",
+    "issues": "https://github.com/unionco/craft-sync-db"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Abry Rath<abryrath@gmail.com>",
+      "homepage": "https://github.com/unionco"
+    }
+  ],
+  "require": {
+    "craftcms/cms": "^3.0.0-RC1",
+    "unionco/syncdb": "^0.7",
+    "monolog/monolog": "^1.24"
+  },
+  "autoload": {
+    "psr-4": {
+      "unionco\\craftsyncdb\\": "src/"
+    }
+  },
+  "extra": {
+    "name": "SyncDb",
+    "handle": "sync-db",
+    "hasCpSettings": true,
+    "hasCpSection": true,
+    "changelogUrl": "???",
+    "components": {
+      "sync": "unionco\\craftsyncdb\\services\\Sync"
     },
-    "license": "MIT",
-    "authors": [{
-        "name": "Abry Rath<abryrath@gmail.com>",
-        "homepage": "https://github.com/unionco"
-    }],
-    "require": {
-        "craftcms/cms": "^3.0.0-RC1",
-        "unionco/syncdb": "^0.7.1.1",
-        "monolog/monolog": "^1.24"
-    },
-    "autoload": {
-        "psr-4": {
-            "unionco\\craftsyncdb\\": "src/"
-        }
-    },
-    "extra": {
-        "name": "SyncDb",
-        "handle": "sync-db",
-        "hasCpSettings": false,
-        "hasCpSection": false,
-        "changelogUrl": "???",
-        "components": {
-            "sync": "unionco\\craftsyncdb\\services\\Sync"
-        },
-        "class": "unionco\\craftsyncdb\\SyncDbPlugin"
-    },
-    "require-dev": {
-        "vimeo/psalm": "^3.0"
-    },
-	"repositories": [
-		{
-			"type": "path",
-			"url": "../syncdb"
-		}
-	]
+    "class": "unionco\\craftsyncdb\\SyncDbPlugin"
+  },
+  "require-dev": {
+    "vimeo/psalm": "^3.0"
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../syncdb"
+    }
+  ]
 }
