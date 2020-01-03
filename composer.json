@@ -2,6 +2,7 @@
   "name": "unionco/craft-sync-db",
   "description": "Craft 3 plugin to sync database across environments",
   "type": "craft-plugin",
+  "version": "0.7.4",
   "keywords": [
     "craft",
     "cms",
@@ -23,7 +24,7 @@
   "require": {
     "craftcms/cms": "^3.0.0-RC1",
     "unionco/syncdb": "^0.7",
-    "monolog/monolog": "^1.24"
+    "monolog/monolog": "^1.24|~2.0"
   },
   "autoload": {
     "psr-4": {
