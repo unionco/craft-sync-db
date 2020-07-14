@@ -10,25 +10,24 @@ use unionco\craftsyncdb\SyncDbPlugin;
 class Settings extends Model
 {
     /** @var string[] Tables to skip during sync */
-    public $skipTables;
+    public $skipTables = [];
 
     /** @var array[] Configuration for remote environments*/
-    public $environments;
+    public $environments = [];
 
     public function hydrate(string $yamlFilePath): void
     {
         $data = Yaml::parse(file_get_contents($yamlFilePath));
-        $this->skipTables = $data['skipTables'];
-        $this->environments = $data['environments'];
+        $this->skipTables = $data['skipTables'] ?? [];
+        $this->environments = $data['environments'] ?? [];
     }
 
-    public function getEnvironments(): array
+    /**
+     * Getter for environments
+     * @return array[]
+     */
+    public function getEnvironments()
     {
         return $this->environments;
-    }
-
-    public function setAttributes($values, $safeOnly = true)
-    {
-        $settings = [];
     }
 }
