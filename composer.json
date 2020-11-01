@@ -2,7 +2,7 @@
   "name": "unionco/craft-sync-db",
   "description": "Craft 3 plugin to sync database across environments",
   "type": "craft-plugin",
-  "version": "0.8.0",
+  "version": "0.8.0.1",
   "keywords": [
     "craft",
     "cms",
@@ -44,12 +44,5 @@
   },
   "require-dev": {
     "vimeo/psalm": "^3.0"
-  },
-  "repositories": [
-    {
-      "type": "path",
-      "url": "../syncdb",
-      "canonical": false
-    }
-  ]
+  }
 }
