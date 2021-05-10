@@ -28,6 +28,7 @@ use unionco\craftsyncdb\models\Settings;
 use craft\events\RegisterCpNavItemsEvent;
 use unionco\craftsyncdb\services\CpService;
 use craft\events\RegisterTemplateRootsEvent;
+use unionco\craftsyncdb\services\CraftService;
 use craft\console\Application as ConsoleApplication;
 use unionco\craftsyncdb\services\Sync as SyncService;
 use unionco\craftsyncdb\twigextensions\SyncDbTwigExtension;
@@ -45,19 +46,15 @@ class SyncDbPlugin extends Plugin
 {
     /** Constants */
     const CONSOLE_PREFIX = 'sync-db/sync';
-    const DUMP_COMMAND = '/dump';
 
     /** @var SyncDbPlugin */
     public static $plugin;
-
-    /** @var string */
-    public static $yamlConfigFile = '';
 
     /** @var \unionco\syncdb\SyncDb|null **/
     public $syncDb;
 
     /** @var string */
-    public $schemaVersion = '1.1.0';
+    public $schemaVersion = '1.2.0';
 
     /** @var bool */
     public $hasCpSettings = true;
@@ -106,19 +103,20 @@ class SyncDbPlugin extends Plugin
     {
         parent::init();
         self::$plugin = $this;
-        static::$yamlConfigFile = Craft::$app->getPath()->getConfigPath() . '/syncdb.yaml';
+        // static::$yamlConfigFile = Craft::$app->getPath()->getConfigPath() . '/syncdb.yaml';
 
         $this->setComponents([
             'cp' => CpService::class,
+            'craft' => CraftService::class,
         ]);
 
-        $this->syncDb = new SyncDb([
-            /** @psalm-suppress UndefinedConst */
-            'baseDir' => CRAFT_BASE_PATH,
-            'storagePath' => Craft::$app->getPath()->getStoragePath(),
-            'environments' => $this->getSettings()->getEnvironments(),
-            'remoteDumpCommand' => 'craft ' . self::CONSOLE_PREFIX . self::DUMP_COMMAND,
-        ]);
+        // $this->syncDb = new SyncDb([
+        //     /** @psalm-suppress UndefinedConst */
+        //     'baseDir' => CRAFT_BASE_PATH,
+        //     'storagePath' => Craft::$app->getPath()->getStoragePath(),
+        //     'environments' => $this->getSettings()->getEnvironments(),
+        //     'remoteDumpCommand' => 'craft ' . self::CONSOLE_PREFIX . self::DUMP_COMMAND,
+        // ]);
 
         if (Craft::$app instanceof ConsoleApplication) {
             $this->controllerNamespace = 'unionco\craftsyncdb\console\controllers';
@@ -139,18 +137,18 @@ class SyncDbPlugin extends Plugin
             }
         );
 
-        Event::on(
-            UrlManager::class,
-            UrlManager::EVENT_REGISTER_CP_URL_RULES,
-            function (RegisterUrlRulesEvent $event) {
+        // Event::on(
+        //     UrlManager::class,
+        //     UrlManager::EVENT_REGISTER_CP_URL_RULES,
+        //     function (RegisterUrlRulesEvent $event) {
                 // URL: /admin/sync-db/start
-                $event->rules['sync-db/sync/start'] = 'sync-db/sync/init';
-                $event->rules['sync-db/sync/status'] = 'sync-db/sync/status';
-                $event->rules['sync-db/status'] = 'sync-db/sync/status';
-                $event->rules['sync-db/config/save'] = 'sync-db/config/save';
-                $event->rules['sync-db/yaml'] = 'sync-db/config/yaml';
-            }
-        );
+                // $event->rules['sync-db/sync/start'] = 'sync-db/sync/init';
+                // $event->rules['sync-db/sync/status'] = 'sync-db/sync/status';
+                // $event->rules['sync-db/status'] = 'sync-db/sync/status';
+                // $event->rules['sync-db/config/save'] = 'sync-db/config/save';
+                // $event->rules['sync-db/yaml'] = 'sync-db/config/yaml';
+        //     }
+        // );
 
         /** @psalm-suppress UndefinedClass */
         Craft::info(

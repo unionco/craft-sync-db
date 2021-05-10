@@ -1,7 +1,7 @@
 {
     "pluginName": "sync-db",
     "pluginDescription": "Craft 3 plugin to sync database across environments",
-    "pluginVersion": "1.0.0",
+    "pluginVersion": "0.9.0",
     "pluginAuthorName": "Abry Rath<abryrath@gmail.com>",
     "pluginVendorName": "unionco",
     "pluginAuthorUrl": "github.com/unionco",

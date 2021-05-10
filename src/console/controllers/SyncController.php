@@ -11,13 +11,11 @@
 namespace unionco\craftsyncdb\console\controllers;
 
 use Craft;
-use Monolog\Logger;
-use yii\helpers\Console;
+use craft\helpers\Console;
 use unionco\syncdb\SyncDb;
 use yii\console\Controller;
-use Monolog\Handler\StreamHandler;
+use yii\console\widgets\Table;
 use unionco\craftsyncdb\SyncDbPlugin;
-use Symfony\Component\Console\Output\Output;
 
 /**
  * Sync Command
@@ -28,61 +26,53 @@ use Symfony\Component\Console\Output\Output;
  */
 class SyncController extends Controller
 {
-    private function verbosity(string $verbosity): ?int
-    {
-        $verbosityLevel = null;
-        if ($verbosity) {
-            $input = trim($verbosity);
-            switch ($input) {
-                case 'quiet':
-                    $verbosityLevel = Output::VERBOSITY_QUIET;
-                    break;
-                case 'normal':
-                    $verbosityLevel = Output::VERBOSITY_NORMAL;
-                    break;
-                case 'verbose':
-                    $verbosityLevel = Output::VERBOSITY_VERBOSE;
-                    break;
-            }
-        }
-
-        return $verbosityLevel;
-    }
-
-    /** 
+    /**
      * @param string $environment
      * @return int */
-    public function actionIndex($environment = 'production', string $verbosity = 'normal')
+    public function actionIndex($environment = 'production')
     {
-        $verbosityLevel = $this->verbosity($verbosity);
-
-        /** @var SyncDb */
-        $syncDb = SyncDbPlugin::$plugin->syncDb;
-        
-        $syncDb->sync(null, $environment, false, $verbosityLevel);
+        $craft = SyncDbPlugin::$plugin->craft;
+        $craft->run($environment);
 
         return self::EXIT_CODE_NORMAL;
     }
 
     /** @return int */
-    public function actionDump(string $verbosity = 'normal', bool $remote = false)
+    public function actionDumpConfig($environment = 'production')
     {
-        $verbosityLevel = $this->verbosity($verbosity);
-        
-        /** @var \unionco\syncdb\SyncDbPlugin */
-        $syncDb = SyncDbPlugin::$plugin->syncDb;
-        
-        $syncDb->dump(null, $verbosityLevel, $remote);
+        $craft = SyncDbPlugin::$plugin->craft;
+
+        [
+            'config' => $config,
+            'ssh' => $ssh,
+            'remoteDb' => $remoteDb,
+            'localDb' => $localDb,
+        ] = $craft->dumpConfig($environment);
+
+        $this->stdout("Common Config\n", Console::FG_GREEN);
+        echo Table::widget([
+            'headers' => ['remoteWorkingDir', 'localWorkingDir'],
+            'rows' => [[$config['remoteWorkingDir'], $config['localWorkingDir']]],
+        ]);
+
+        $this->stdout("SSH Config\n", Console::FG_GREEN);
+        echo Table::widget([
+            'headers' => ['Key', 'Value'],
+            'rows' => $ssh->getRows(),
+        ]);
+
+        $this->stdout("Remote Database Config\n", Console::FG_GREEN);
+        echo Table::widget([
+            'headers' => ['Key', 'Value'],
+            'rows' => $remoteDb->getRows(),
+        ]);
+
+        $this->stdout("Local Database Config\n", Console::FG_GREEN);
+        echo Table::widget([
+            'headers' => ['Key', 'Value'],
+            'rows' => $localDb->getRows(),
+        ]);
 
         return self::EXIT_CODE_NORMAL;
-    }
-
-    public function actionBackground(string $logFile, string $env)
-    {
-        $filePath = Craft::$app->getPath()->getStoragePath() . '/' . $logFile;
-        $logger = new Logger('sync');
-        $logger->pushHandler(new StreamHandler($filePath, Logger::INFO));
-        $syncDb = SyncDbPlugin::getInstance()->syncDb;
-        $syncDb->sync($logger, $env);
     }
 }
