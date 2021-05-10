@@ -7,6 +7,7 @@ use craft\base\Component;
 use unionco\syncdb\SyncDb;
 use craft\helpers\FileHelper;
 use craft\helpers\StringHelper;
+use unionco\syncdb\Model\Scenario;
 use unionco\syncdb\Service\Config;
 use yii\base\InvalidConfigException;
 
@@ -17,17 +18,37 @@ class CraftService extends Component
     private const YAML = 'yaml';
     private static $configTypes = [self::PHP, self::JSON, self::YAML];
 
+    private function getLogPath()
+    {
+        $path = \Craft::$app->getPath()->getLogPath() . '/syncdb.log';
+        if (!\file_exists($path)) {
+            \touch($path);
+        }
+        return $path;
+    }
+
     public function run(string $environment)
     {
-        $syncdb = new SyncDb();
+        $syncdb = new SyncDb($this->getLogPath());
         $configPath = $this->getConfigFilePath();
         $config = $this->normalizeConfig($configPath);
         return $syncdb->run($config, $environment);
     }
 
+    public function preview(string $environment): Scenario
+    {
+        $syncdb = new SyncDb($this->getLogPath());
+        $configPath = $this->getConfigFilePath();
+        $config = $this->normalizeConfig($configPath);
+        /** @var \unionco\syncdb\Model\Scenario $scenario */
+        $scenario = $syncdb->preview($config, $environment);
+
+        return $scenario;
+    }
+
     public function dumpConfig(string $environment)
     {
-        $syncDb = new SyncDb();
+        $syncDb = new SyncDb($this->getLogPath());
         $configPath = $this->getConfigFilePath();
         $config = $this->normalizeConfig($configPath);
         return $syncDb->dumpConfig($config, $environment);
