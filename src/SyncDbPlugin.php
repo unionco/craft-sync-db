@@ -110,10 +110,7 @@ class SyncDbPlugin extends Plugin
 
         if (Craft::$app instanceof ConsoleApplication) {
             $this->controllerNamespace = 'unionco\craftsyncdb\console\controllers';
-        } else {
-            Craft::$app->getView()->registerTwigExtension(new SyncDbTwigExtension());
         }
-
 
         Event::on(
             Cp::class,
