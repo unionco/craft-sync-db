@@ -4588,12 +4588,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/unionco/syncdb.git",
-                "reference": "33d8ffdb61e288563d6b4e33d99ab29d0bf09733"
+                "reference": "414246b634d8c176eb49f09b2820af0812aa8735"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/unionco/syncdb/zipball/33d8ffdb61e288563d6b4e33d99ab29d0bf09733",
-                "reference": "33d8ffdb61e288563d6b4e33d99ab29d0bf09733",
+                "url": "https://api.github.com/repos/unionco/syncdb/zipball/414246b634d8c176eb49f09b2820af0812aa8735",
+                "reference": "414246b634d8c176eb49f09b2820af0812aa8735",
                 "shasum": ""
             },
             "require": {
@@ -4630,7 +4630,7 @@
                 "issues": "https://github.com/unionco/syncdb/issues",
                 "source": "https://github.com/unionco/syncdb/tree/feature/refactor"
             },
-            "time": "2021-05-12T12:06:30+00:00"
+            "time": "2021-05-12T12:10:22+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
