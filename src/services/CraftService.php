@@ -27,6 +27,12 @@ class CraftService extends Component
         return $path;
     }
 
+
+    /**
+     * Entry point to SyncDb::run
+     * @param string $environment
+     * @return
+     */
     public function run(string $environment)
     {
         $syncdb = new SyncDb($this->getLogPath());

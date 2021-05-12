@@ -1,7 +1,0 @@
-<div data-vue="settings" data-settings-json="{{ settings|json_encode }}" data-db-tables-json="{{ tableNames|json_encode }}">
-    <div data-app></div>
-</div>
-{% do view.registerAssetBundle("unionco\\craftsyncdb\\assetbundles\\cp\\CpAsset") %}
-{% js %}
-{# new Vue({ el: '#settings-vue-root' }); #}
-{% endjs %}

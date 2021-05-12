@@ -57,7 +57,7 @@ class SyncDbPlugin extends Plugin
     public $schemaVersion = '1.2.0';
 
     /** @var bool */
-    public $hasCpSettings = true;
+    public $hasCpSettings = false;
 
     /**
      * @param string $id
@@ -103,20 +103,10 @@ class SyncDbPlugin extends Plugin
     {
         parent::init();
         self::$plugin = $this;
-        // static::$yamlConfigFile = Craft::$app->getPath()->getConfigPath() . '/syncdb.yaml';
 
         $this->setComponents([
-            'cp' => CpService::class,
             'craft' => CraftService::class,
         ]);
-
-        // $this->syncDb = new SyncDb([
-        //     /** @psalm-suppress UndefinedConst */
-        //     'baseDir' => CRAFT_BASE_PATH,
-        //     'storagePath' => Craft::$app->getPath()->getStoragePath(),
-        //     'environments' => $this->getSettings()->getEnvironments(),
-        //     'remoteDumpCommand' => 'craft ' . self::CONSOLE_PREFIX . self::DUMP_COMMAND,
-        // ]);
 
         if (Craft::$app instanceof ConsoleApplication) {
             $this->controllerNamespace = 'unionco\craftsyncdb\console\controllers';
@@ -137,19 +127,6 @@ class SyncDbPlugin extends Plugin
             }
         );
 
-        // Event::on(
-        //     UrlManager::class,
-        //     UrlManager::EVENT_REGISTER_CP_URL_RULES,
-        //     function (RegisterUrlRulesEvent $event) {
-                // URL: /admin/sync-db/start
-                // $event->rules['sync-db/sync/start'] = 'sync-db/sync/init';
-                // $event->rules['sync-db/sync/status'] = 'sync-db/sync/status';
-                // $event->rules['sync-db/status'] = 'sync-db/sync/status';
-                // $event->rules['sync-db/config/save'] = 'sync-db/config/save';
-                // $event->rules['sync-db/yaml'] = 'sync-db/config/yaml';
-        //     }
-        // );
-
         /** @psalm-suppress UndefinedClass */
         Craft::info(
             /** @psalm-suppress UndefinedClass */
@@ -160,42 +137,10 @@ class SyncDbPlugin extends Plugin
             ),
             __METHOD__
         );
-        // parent::init();
     }
 
     public static function getInstance(): SyncDbPlugin
     {
         return self::$plugin;
-    }
-
-    protected function createSettingsModel()
-    {
-        if (!static::$yamlConfigFile) {
-            return;
-        }
-        if (!file_exists(static::$yamlConfigFile)) {
-            $this->cp->convertConfigFile();
-        }
-        $settings = new Settings();
-        $settings->hydrate(static::$yamlConfigFile);
-        return $settings;
-    }
-
-    protected function settingsHtml()
-    {
-        $tableNames = Craft::$app->getDb()->getSchema()->getTableNames();
-        $view = Craft::$app->getView();
-        $options = [
-            'settings' => $this->getSettings(),
-            'tableNames' => $tableNames,
-        ];
-
-        return $view->renderTemplate('sync-db/settings', $options);
-    }
-
-    public function setSettings(array $settings)
-    {
-        // $this->cp->writeSettings($settings);
-        return;
     }
 }
