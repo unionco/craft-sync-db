@@ -53,7 +53,7 @@ class SyncController extends Controller
         $rows = \array_map(
             function (SetupStep $step) use ($ssh): array {
             return [
-                $step->id,
+                $step->getId(),
                 $step->getName(),
                 $step->getCommandString($ssh, true)
             ];
@@ -70,7 +70,7 @@ class SyncController extends Controller
         $rows = \array_map(
             function (ScenarioStep $step) use ($ssh): array {
             return [
-                $step->id,
+                $step->getId(),
                 $step->getName(),
                 $step->getCommandString($ssh, true)
             ];
@@ -87,8 +87,8 @@ class SyncController extends Controller
         $rows = \array_map(
             function (TeardownStep $step) use ($ssh): array {
             return [
-                $step->id,
-                $step->relatedId,
+                $step->getId(),
+                $step->getRelatedId(),
                 $step->getName(),
                 $step->getCommandString($ssh, true)
             ];
