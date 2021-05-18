@@ -115,10 +115,11 @@ class SyncController extends Controller
             'localDb' => $localDb,
         ] = $craft->dumpConfig($environment);
 
+        $common = $config['common'];
         $this->stdout("Common Config\n", Console::FG_GREEN);
         echo Table::widget([
             'headers' => ['remoteWorkingDir', 'localWorkingDir'],
-            'rows' => [[$config['remoteWorkingDir'], $config['localWorkingDir']]],
+            'rows' => [[$common['remoteWorkingDir'], $common['localWorkingDir']]],
         ]);
 
         $this->stdout("SSH Config\n", Console::FG_GREEN);
