@@ -55,7 +55,7 @@ class SyncController extends Controller
             return [
                 $step->getId(),
                 $step->getName(),
-                $step->getCommandString($ssh, true)
+                $step->getCommandString($ssh, true, true)
             ];
         }, $scenario->getSetupSteps());
 
@@ -90,7 +90,7 @@ class SyncController extends Controller
                 $step->getId(),
                 $step->getRelatedId(),
                 $step->getName(),
-                $step->getCommandString($ssh, true)
+                $step->getCommandString($ssh, true, true)
             ];
         }, $scenario->getTeardownSteps());
 
