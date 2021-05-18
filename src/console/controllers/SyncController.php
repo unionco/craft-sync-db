@@ -17,7 +17,7 @@ use yii\console\Controller;
 use yii\console\widgets\Table;
 use unionco\syncdb\Model\SetupStep;
 use unionco\craftsyncdb\SyncDbPlugin;
-use unionco\syncdb\Model\ScenarioStep;
+use unionco\syncdb\Model\ChainStep;
 use unionco\syncdb\Model\TeardownStep;
 
 /**
@@ -68,7 +68,7 @@ class SyncController extends Controller
         $this->stdout("These are the primary actions to sync the database\n");
 
         $rows = \array_map(
-            function (ScenarioStep $step) use ($ssh): array {
+            function (ChainStep $step) use ($ssh): array {
             return [
                 $step->getId(),
                 $step->getName(),
