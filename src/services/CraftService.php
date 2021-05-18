@@ -2,13 +2,15 @@
 
 namespace unionco\craftsyncdb\services;
 
-use craft\helpers\App;
 use craft\base\Component;
-use unionco\syncdb\SyncDb;
-use craft\helpers\FileHelper;
+use craft\helpers\App;
+use craft\helpers\Json;
 use craft\helpers\StringHelper;
+use Symfony\Component\Yaml\Exception\ParseException;
+use Symfony\Component\Yaml\Yaml;
 use unionco\syncdb\Model\Scenario;
 use unionco\syncdb\Service\Config;
+use unionco\syncdb\SyncDb;
 use yii\base\InvalidConfigException;
 
 class CraftService extends Component
@@ -16,58 +18,102 @@ class CraftService extends Component
     private const PHP = 'php';
     private const JSON = 'json';
     private const YAML = 'yaml';
+
     private static $configTypes = [self::PHP, self::JSON, self::YAML];
-
-    private function getLogPath()
-    {
-        $path = \Craft::$app->getPath()->getLogPath() . '/syncdb.log';
-        if (!\file_exists($path)) {
-            \touch($path);
-        }
-        return $path;
-    }
-
 
     /**
      * Entry point to SyncDb::run
      * @param string $environment
-     * @return
+     * @return array
      */
     public function run(string $environment)
     {
-        $syncdb = new SyncDb($this->getLogPath());
-        $configPath = $this->getConfigFilePath();
-        $config = $this->normalizeConfig($configPath);
+        $syncdb = $this->getSyncDb();
+        $config = $this->getConfig();
         return $syncdb->run($config, $environment);
     }
 
+    /**
+     * Entry point to SyncDb::preview
+     * @param string $environment
+     * @return Scenario
+     */
     public function preview(string $environment): Scenario
     {
-        $syncdb = new SyncDb($this->getLogPath());
-        $configPath = $this->getConfigFilePath();
-        $config = $this->normalizeConfig($configPath);
+        $syncdb = $this->getSyncDb();
+        $config = $this->getConfig();
         /** @var \unionco\syncdb\Model\Scenario $scenario */
         $scenario = $syncdb->preview($config, $environment);
 
         return $scenario;
     }
 
+    /**
+     * Entry point to SyncDb::dumpConfig
+     * @param string $environment
+     * @return array
+     */
     public function dumpConfig(string $environment)
     {
-        $syncDb = new SyncDb($this->getLogPath());
-        $configPath = $this->getConfigFilePath();
-        $config = $this->normalizeConfig($configPath);
+        $syncDb = $this->getSyncDb();
+        $config = $this->getConfig();
         return $syncDb->dumpConfig($config, $environment);
     }
 
+    /**
+     * Get the syncdb class, initialized with the Craft log location
+     * @return SyncDb
+     */
+    private function getSyncDb()
+    {
+        $syncdb = new SyncDb($this->getLogPath());
+        return $syncdb;
+    }
+
+    /**
+     * Attempt to retrieve, parse, and normalize the config file.
+     * Will try .php, .yaml, and then .json, in that order.
+     * @return array
+     */
+    private function getConfig()
+    {
+        $configPath = $this->getConfigFilePath();
+        $config = $this->normalizeConfig($configPath);
+        return $config;
+    }
+
+    /**
+     * Take the config file path and load it into a normalized array
+     * @param string $path
+     * @throws InvalidConfigException
+     * @return array
+     */
     private function normalizeConfig($path)
     {
         if (StringHelper::endsWithAny($path, ['.php'])) {
             return require $path;
+        } elseif (StringHelper::endsWithAny($path, ['.yaml'])) {
+            if (!\class_exists('Yaml')) {
+                throw new InvalidConfigException('Your configuration uses YAML, but the Symfony YAML component is not installed.');
+            }
+            try {
+                $yaml = Yaml::parseFile($path);
+            } catch (ParseException $e) {
+                throw $e;
+            }
+            return $yaml;
+        } elseif (StringHelper::endsWithAny($path, ['.json'])) {
+            $contents = \file_get_contents($path);
+            return Json::decodeIfJson($contents, true);
         }
-        return [];
+        throw new InvalidConfigException('Config does not use PHP, YAML, or JSON');
     }
 
+    /**
+     * Return the config file path (given its type)
+     * @param self::PHP|self::YAML|self::JSON|null $type
+     * @return string
+     */
     public function getConfigFilePath($type = null): string
     {
         /** @var string */
@@ -88,49 +134,16 @@ class CraftService extends Component
             $config = $this->writeDefaultConfig(self::PHP);
         }
         return $config;
-
-        // if (\file_exists($pathPrefix . $yaml)) {
-        //     //
-        // }
-
-        // $json = './syncdb.json';
-        // if (\file_exists($pathPrefix . $json)) {
-
-        // }
-
-        // $php = './syncdb.php';
-        // if (\file_exists($pathPrefix . $php))
     }
 
     /** @param self::PHP|self::JSON|self::YAML $type */
     private function writeDefaultConfig($type)
     {
-
-        $defaultConfig = [
-            'common' => [
-                'remoteWorkingDir' => '/var/www/',
-                'localWorkingDir' => CRAFT_BASE_PATH,
-                'ignoreTables' => [
-                    "craft_templatecaches",
-                    "craft_templatecachequeries",
-                    "craft_templatecacheelements",
-                    "craft_sessions",
-                    "craft_cache"
-                ],
-                'driver' => App::env('DB_DRIVER'),
-                'port' => 22,
-            ],
-            'production' => [
-                'user' => '',
-                'host' => '',
-                'identity' => '',
-            ],
-            'staging' => [
-                'user' => '',
-                'host' => '',
-                'identity' => '',
-            ]
-        ];
+        /** @var array */
+        $defaultConfig = Config::getDefaultConfig([
+            'driver' => App::env('DB_DRIVER'),
+            'basePath' => CRAFT_BASE_PATH,
+        ]);
 
         switch ($type) {
             case self::PHP:
@@ -150,8 +163,10 @@ return [
             "craft_sessions",
             "craft_cache"
         ],
-        'driver' => {$driver},
+        'driver' => '{$driver}',
         'port' => 22,
+    ],
+    'local' => [
     ],
     'production' => [
         'user' => '',
@@ -173,10 +188,41 @@ EOF;
                 }
                 return $path;
                 break;
+            case self::YAML:
+                $yaml = Yaml::dump($defaultConfig);
+                try {
+                    $path = $this->getConfigFilePath(self::YAML);
+                    \file_put_contents($path, $yaml);
+                } catch (\Throwable $e) {
+                    throw $e;
+                }
+                break;
+            case self::JSON:
+                $json = Json::encode($defaultConfig);
+                try {
+                    $path = $this->getConfigFilePath(self::JSON);
+                    \file_put_contents($path, $json);
+                } catch (\Throwable $e) {
+                    throw $e;
+                }
+                break;
             default:
                 throw new InvalidConfigException('Not implemented');
         }
     }
 
+    /**
+     * Return the path, file included, for a text log. Create it if it
+     * does not exist yet. <craft>/storage/logs/syncdb.log
+     * @return string
+     */
+    private function getLogPath(): string
+    {
+        $path = \Craft::$app->getPath()->getLogPath() . '/syncdb.log';
+        if (!\file_exists($path)) {
+            \touch($path);
+        }
+        return $path;
+    }
 
 }
