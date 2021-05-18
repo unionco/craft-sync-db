@@ -115,10 +115,6 @@ class SyncController extends Controller
             'localDb' => $localDb,
         ] = $craft->dumpConfig($environment);
 
-        $removeNewlines = function (string $str): string {
-            return preg_replace("\n", '\n', $str);
-        };
-
         $common = $config['common'];
         $this->stdout("Common Config\n", Console::FG_GREEN);
         echo Table::widget([
@@ -129,19 +125,19 @@ class SyncController extends Controller
         $this->stdout("SSH Config\n", Console::FG_GREEN);
         echo Table::widget([
             'headers' => ['Key', 'Value'],
-            'rows' => \array_map($removeNewlines, $ssh->getRows()),
+            'rows' => $ssh->getRows(),
         ]);
 
         $this->stdout("Remote Database Config\n", Console::FG_GREEN);
         echo Table::widget([
             'headers' => ['Key', 'Value'],
-            'rows' => \array_map($removeNewlines, $remoteDb->getRows()),
+            'rows' => $remoteDb->getRows(),
         ]);
 
         $this->stdout("Local Database Config\n", Console::FG_GREEN);
         echo Table::widget([
             'headers' => ['Key', 'Value'],
-            'rows' => \array_map($removeNewlines, $localDb->getRows()),
+            'rows' => $localDb->getRows(),
         ]);
 
         return self::EXIT_CODE_NORMAL;
