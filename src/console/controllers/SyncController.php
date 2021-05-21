@@ -151,15 +151,15 @@ class SyncController extends Controller
             return Logger::INFO;
         }
         $l = strtolower($logLevel);
-        if (StringHelper::startsWith('d')) {
+        if (StringHelper::startsWith($l, 'd')) {
             return Logger::DEBUG;
-        } elseif (StringHelper::startsWith('i')) {
+        } elseif (StringHelper::startsWith($l, 'i')) {
             return Logger::INFO;
-        } elseif (StringHelper::startsWith('n')) {
+        } elseif (StringHelper::startsWith($l, 'n')) {
             return Logger::NOTICE;
-        } elseif (StringHelper::startsWith('w')) {
+        } elseif (StringHelper::startsWith($l, 'w')) {
             return Logger::WARNING;
-        } elseif (StringHelper::startsWith('e')) {
+        } elseif (StringHelper::startsWith($l, 'e')) {
             return Logger::ERROR;
         }
     }
