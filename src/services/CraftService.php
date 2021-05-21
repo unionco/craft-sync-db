@@ -26,9 +26,9 @@ class CraftService extends Component
      * @param string $environment
      * @return array
      */
-    public function run(string $environment)
+    public function run(string $environment, int $logLevel)
     {
-        $syncdb = $this->getSyncDb();
+        $syncdb = $this->getSyncDb($logLevel);
         $config = $this->getConfig();
         return $syncdb->run($config, $environment);
     }
@@ -38,9 +38,9 @@ class CraftService extends Component
      * @param string $environment
      * @return Scenario
      */
-    public function preview(string $environment): Scenario
+    public function preview(string $environment, int $logLevel): Scenario
     {
-        $syncdb = $this->getSyncDb();
+        $syncdb = $this->getSyncDb($logLevel);
         $config = $this->getConfig();
         /** @var \unionco\syncdb\Model\Scenario $scenario */
         $scenario = $syncdb->preview($config, $environment);
@@ -53,9 +53,9 @@ class CraftService extends Component
      * @param string $environment
      * @return array
      */
-    public function dumpConfig(string $environment)
+    public function dumpConfig(string $environment, int $logLevel)
     {
-        $syncDb = $this->getSyncDb();
+        $syncDb = $this->getSyncDb($logLevel);
         $config = $this->getConfig();
         return $syncDb->dumpConfig($config, $environment);
     }
@@ -64,9 +64,9 @@ class CraftService extends Component
      * Get the syncdb class, initialized with the Craft log location
      * @return SyncDb
      */
-    private function getSyncDb()
+    private function getSyncDb(int $logLevel)
     {
-        $syncdb = new SyncDb($this->getLogPath());
+        $syncdb = new SyncDb($this->getLogPath(), $logLevel);
         return $syncdb;
     }
 

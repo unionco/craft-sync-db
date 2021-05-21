@@ -15,11 +15,12 @@ use craft\helpers\Console;
 use unionco\syncdb\SyncDb;
 use yii\console\Controller;
 use yii\console\widgets\Table;
+use craft\helpers\StringHelper;
+use unionco\syncdb\Model\ChainStep;
 use unionco\syncdb\Model\SetupStep;
 use unionco\craftsyncdb\SyncDbPlugin;
-use unionco\syncdb\Model\ChainStep;
 use unionco\syncdb\Model\TeardownStep;
-
+use Monolog\Logger;
 /**
  * Sync Command
  *
@@ -32,19 +33,20 @@ class SyncController extends Controller
     /**
      * @param string $environment
      * @return int */
-    public function actionIndex($environment = 'production')
+    public function actionIndex(string $environment = 'production', string $logLevel = '')
     {
         $craft = SyncDbPlugin::$plugin->craft;
-        $craft->run($environment);
+        $l = $this->_parseLogLevel($logLevel);
+        $craft->run($environment, $l);
 
         return self::EXIT_CODE_NORMAL;
     }
 
-    public function actionPreview($environment = 'production')
+    public function actionPreview(string $environment = 'production', string $logLevel = '')
     {
         $craft = SyncDbPlugin::$plugin->craft;
-
-        $scenario = $craft->preview($environment);
+        $l = $this->_parseLogLevel($logLevel);
+        $scenario = $craft->preview($environment, $l);
         $ssh = $scenario->getSshContext();
 
         $this->stdout("Setup Commands\n", Console::FG_GREEN);
@@ -104,16 +106,16 @@ class SyncController extends Controller
     }
 
     /** @return int */
-    public function actionDumpConfig($environment = 'production')
+    public function actionDumpConfig(string $environment = 'production', string $logLevel = '')
     {
         $craft = SyncDbPlugin::$plugin->craft;
-
+        $l = $this->_parseLogLevel($logLevel);
         [
             'config' => $config,
             'ssh' => $ssh,
             'remoteDb' => $remoteDb,
             'localDb' => $localDb,
-        ] = $craft->dumpConfig($environment);
+        ] = $craft->dumpConfig($environment, $l);
 
         $common = $config['common'];
         $this->stdout("Common Config\n", Console::FG_GREEN);
@@ -141,5 +143,24 @@ class SyncController extends Controller
         ]);
 
         return self::EXIT_CODE_NORMAL;
+    }
+
+    private function _parseLogLevel(string $logLevel = ''): int
+    {
+        if (!$logLevel) {
+            return Logger::INFO;
+        }
+        $l = strtolower($logLevel);
+        if (StringHelper::startsWith('d')) {
+            return Logger::DEBUG;
+        } elseif (StringHelper::startsWith('i')) {
+            return Logger::INFO;
+        } elseif (StringHelper::startsWith('n')) {
+            return Logger::NOTICE;
+        } elseif (StringHelper::startsWith('w')) {
+            return Logger::WARNING;
+        } elseif (StringHelper::startsWith('e')) {
+            return Logger::ERROR;
+        }
     }
 }
