@@ -30,10 +30,12 @@ use Monolog\Logger;
  */
 class SyncController extends Controller
 {
+    protected $defaultAction = 'sync';
+
     /**
      * @param string $environment
      * @return int */
-    public function actionIndex(string $environment = 'production', string $logLevel = '')
+    public function actionSync(string $environment = 'production', string $logLevel = '')
     {
         $craft = SyncDbPlugin::$plugin->craft;
         $l = $this->_parseLogLevel($logLevel);
@@ -106,7 +108,7 @@ class SyncController extends Controller
     }
 
     /** @return int */
-    public function actionDumpConfig(string $environment = 'production', string $logLevel = '')
+    public function actionConfig(string $environment = 'production', string $logLevel = '')
     {
         $craft = SyncDbPlugin::$plugin->craft;
         $l = $this->_parseLogLevel($logLevel);
