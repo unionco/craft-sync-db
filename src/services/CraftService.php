@@ -93,7 +93,7 @@ class CraftService extends Component
         if (StringHelper::endsWithAny($path, ['.php'])) {
             return require $path;
         } elseif (StringHelper::endsWithAny($path, ['.yaml'])) {
-            if (!\class_exists('Yaml')) {
+            if (!\class_exists('Symfony\\Component\\Yaml\\Yaml')) {
                 throw new InvalidConfigException('Your configuration uses YAML, but the Symfony YAML component is not installed.');
             }
             try {

@@ -21,6 +21,8 @@ use unionco\syncdb\Model\SetupStep;
 use unionco\craftsyncdb\SyncDbPlugin;
 use unionco\syncdb\Model\TeardownStep;
 use Monolog\Logger;
+use yii\console\ExitCode;
+
 /**
  * Sync Command
  *
@@ -30,7 +32,7 @@ use Monolog\Logger;
  */
 class SyncController extends Controller
 {
-    protected $defaultAction = 'sync';
+    public $defaultAction = 'sync';
 
     /**
      * @param string $environment
@@ -41,7 +43,7 @@ class SyncController extends Controller
         $l = $this->_parseLogLevel($logLevel);
         $craft->run($environment, $l);
 
-        return self::EXIT_CODE_NORMAL;
+        return ExitCode::OK;
     }
 
     public function actionPreview(string $environment = 'production', string $logLevel = '')
@@ -144,7 +146,7 @@ class SyncController extends Controller
             'rows' => $localDb->getRows(),
         ]);
 
-        return self::EXIT_CODE_NORMAL;
+        return ExitCode::OK;
     }
 
     private function _parseLogLevel(string $logLevel = ''): int
