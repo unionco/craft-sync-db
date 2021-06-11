@@ -30,7 +30,7 @@ use Monolog\Logger;
  */
 class SyncController extends Controller
 {
-    protected $defaultAction = 'sync';
+    public $defaultAction = 'sync';
 
     /**
      * @param string $environment

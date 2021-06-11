@@ -2,7 +2,7 @@
   "name": "unionco/craft-sync-db",
   "description": "Craft 3 plugin to sync database across environments",
   "type": "craft-plugin",
-  "version": "0.10.1.1",
+  "version": "0.10.1.3",
   "keywords": [
     "craft",
     "cms",

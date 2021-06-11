@@ -112,17 +112,17 @@ class SyncDbPlugin extends Plugin
             $this->controllerNamespace = 'unionco\craftsyncdb\console\controllers';
         }
 
-        Event::on(
-            Cp::class,
-            Cp::EVENT_REGISTER_CP_NAV_ITEMS,
-            function (RegisterCpNavItemsEvent $event) {
-                $event->navItems[] = [
-                    'url' => 'sync-db',
-                    'label' => 'Sync Database',
-                    'icon' => '@plugins/sync-db/icon-mask.svg',
-                ];
-            }
-        );
+        // Event::on(
+        //     Cp::class,
+        //     Cp::EVENT_REGISTER_CP_NAV_ITEMS,
+        //     function (RegisterCpNavItemsEvent $event) {
+        //         $event->navItems[] = [
+        //             'url' => 'sync-db',
+        //             'label' => 'Sync Database',
+        //             'icon' => '@plugins/sync-db/icon-mask.svg',
+        //         ];
+        //     }
+        // );
 
         /** @psalm-suppress UndefinedClass */
         Craft::info(
